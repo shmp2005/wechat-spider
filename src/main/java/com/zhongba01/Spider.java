@@ -27,8 +27,8 @@ public final class Spider {
         Elements elements = document.select(".weui_msg_card");
         for (Element el : elements) {
             String nextUrl = parseMsgCard(el);
-            String content = parseArticle(webClient, nextUrl);
-            System.out.println(content);
+//            String content = parseArticle(webClient, nextUrl);
+//            System.out.println(content);
             System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         }
 
@@ -50,7 +50,6 @@ public final class Spider {
 
     private static String parseArticle(WebClient webClient, String articleUrl) throws IOException {
         final HtmlPage page = webClient.getPage(articleUrl);
-//        System.out.println(page.asXml());
         Document document = Jsoup.parse(page.asXml());
         return document.selectFirst(".rich_media_content").html();
     }
