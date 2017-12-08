@@ -19,6 +19,7 @@ public final class Spider {
     private final static String WX_HOST = "https://mp.weixin.qq.com";
 
     public static void main(String[] args) throws IOException {
+        //淡水value 公众号的文章
         final String url = "https://mp.weixin.qq.com/profile?src=3&timestamp=1512720829&ver=1&signature=Aatz6kC2L38Usa2AYoN61yWg6gXnqy-ZamTLrBsvCU41yrxl3nfW8nKEA2fj*t8sIg0nvAr1tigN*K9LLfd0sQ==";
         final WebClient webClient = new WebClient(BrowserVersion.CHROME);
         final HtmlPage page = webClient.getPage(url);
