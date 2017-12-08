@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 /**
  * @ author: tangjianhua
@@ -20,9 +21,16 @@ public final class Spider {
 
     public static void main(String[] args) throws IOException {
         //淡水value 公众号的文章
-        final String url = "https://mp.weixin.qq.com/profile?src=3&timestamp=1512720829&ver=1&signature=Aatz6kC2L38Usa2AYoN61yWg6gXnqy-ZamTLrBsvCU41yrxl3nfW8nKEA2fj*t8sIg0nvAr1tigN*K9LLfd0sQ==";
+//        final String url = "https://mp.weixin.qq.com/profile?src=3&timestamp=1512720829&ver=1&signature=Aatz6kC2L38Usa2AYoN61yWg6gXnqy-ZamTLrBsvCU41yrxl3nfW8nKEA2fj*t8sIg0nvAr1tigN*K9LLfd0sQ==";
         final WebClient webClient = new WebClient(BrowserVersion.CHROME);
-        final HtmlPage page = webClient.getPage(url);
+
+        final String query = URLEncoder.encode("中巴价值投资研习社", "utf-8");
+        final String url = "http://weixin.sogou.com/weixin?type=1&query=" + query + "&ie=utf8&s_from=input&_sug_=n&_sug_type_=";
+        final HtmlPage page1 = webClient.getPage(url);
+        Document document1 = Jsoup.parse(page1.asXml());
+        String url1 = document1.selectFirst(".tit a").attr("href");
+
+        final HtmlPage page = webClient.getPage(url1);
 
         Document document = Jsoup.parse(page.asXml());
         Elements elements = document.select(".weui_msg_card");
