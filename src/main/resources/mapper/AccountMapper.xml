@@ -1,0 +1,5 @@
+<resultMap id="accountResultMap" type="com.zhongba01.domain.gou.Account">
+    <result property="lastPublish" column="last_publish"/>
+    <result property="createdAt" column="created_at"/>
+    <result property="updatedAt" column="updated_at"/>
+</resultMap>
