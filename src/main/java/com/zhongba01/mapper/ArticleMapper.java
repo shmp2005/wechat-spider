@@ -24,14 +24,16 @@ public interface ArticleMapper {
     @Select("Select * From gou_articles WHERE account_id = #{accountId}")
     Article findByAccountId(@Param("accountId") String accountId);
 
-    @Insert("insert into gou_articles(account_id, msg_id, seq, author, title, pub_date, url, digest, content, created_at, updated_at) values" +
-            "(#{accountId}, #{msgId}, #{seq}, #{author}, #{title}, #{pubDate}, #{url}, #{digest}, #{content}, #{createdAt}, #{updatedAt})")
+    @Insert("insert into gou_articles(account_id, msg_id, seq, origin, author, title, pub_date, url, post_url, digest, content, created_at, updated_at) values" +
+            "(#{accountId}, #{msgId}, #{seq}, #{isOrigin}, #{author}, #{title}, #{pubDate}, #{url}, #{postUrl}, #{digest}, #{content}, #{createdAt}, #{updatedAt})")
     int insert(Article article);
 
     @Results({
             @Result(property = "accountId", column = "account_id"),
             @Result(property = "msgId", column = "msg_id"),
+            @Result(property = "isOrigin", column = "origin", javaType = Boolean.class),
             @Result(property = "pubDate", column = "pub_date"),
+            @Result(property = "postUrl", column = "post_url"),
             @Result(property = "createdAt", column = "created_at"),
             @Result(property = "updatedAt", column = "updated_at")
     })

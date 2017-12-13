@@ -6,6 +6,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.zhongba01.domain.Account;
 import com.zhongba01.mapper.AccountMapper;
 import com.zhongba01.service.AccountService;
+import com.zhongba01.utils.WebClientUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,6 +14,7 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -33,40 +35,25 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void dumpAccounts(String keywords) {
-        final WebClient webClient = new WebClient(BrowserVersion.CHROME);
+        final String query = WebClientUtil.toUtf8(keywords);
+        String url = ROOT_PATH + "?query=" + query + "&_sug_type_=&s_from=input&_sug_=y&type=1&ie=utf8";
+        long startTime = System.currentTimeMillis();
 
-        try {
-            final String query = URLEncoder.encode(keywords, "utf-8");
-            String url = ROOT_PATH + "?query=" + query + "&_sug_type_=&s_from=input&_sug_=y&type=1&ie=utf8";
-            boolean hasNext = true;
+        boolean hasNext = true;
+        while (hasNext) {
+            Document document = WebClientUtil.getDocument(url);
+            Elements elements = document.select(".news-list2 > li");
 
-            //10秒
-            long duration = 1000 * 10;
-            while (hasNext) {
-                final HtmlPage htmlPage = webClient.getPage(url);
-                Document document = Jsoup.parse(htmlPage.asXml());
-                Elements elements = document.select(".news-list2 > li");
+            parseAccounts(elements);
 
-                parseAccounts(elements);
-
-                Element nextPage = document.selectFirst("#pagebar_container #sogou_next");
-                if (null == nextPage) {
-                    hasNext = false;
-                } else {
-                    url = ROOT_PATH + nextPage.attr("href");
-                    System.out.println(url);
-
-                    Thread.sleep(duration);
-                }
+            Element nextPage = document.selectFirst("#pagebar_container #sogou_next");
+            if (null == nextPage) {
+                hasNext = false;
+            } else {
+                url = ROOT_PATH + nextPage.attr("href");
             }
-            System.out.println("done");
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
-        webClient.close();
-
-        List<Account> accountList = accountMapper.findAll();
-        accountList.forEach(System.out::println);
+        System.out.println("done。秒数：" + (System.currentTimeMillis() - startTime) / 1000);
 
         int count = accountMapper.count();
         System.out.println("共有微信公众号：" + count);
@@ -83,11 +70,6 @@ public class AccountServiceImpl implements AccountService {
             String nickname = el.selectFirst(".txt-box .tit").text().replace(" ", "");
             String wxAccount = el.selectFirst(".txt-box .info label[name='em_weixinhao']").text();
 
-            Account account = accountMapper.findByWxAccount(wxAccount);
-            if (null != account) {
-                break;
-            }
-
             String description = null, vname = null;
             LocalDateTime lastPublish = null;
             Elements dlList = el.select("dl");
@@ -103,18 +85,36 @@ public class AccountServiceImpl implements AccountService {
                 }
             }
 
-            account = new Account();
-            account.setNickname(nickname);
-            account.setAccount(wxAccount);
-            account.setDescription(description);
-            account.setVname(vname);
-            account.setAvatar(avatar);
-            account.setActive(1);
-            account.setLastPublish(lastPublish);
-            account.setCreatedAt(LocalDateTime.now());
-            account.setUpdatedAt(LocalDateTime.now());
-            accountMapper.insert(account);
+            Account account = accountMapper.findByWxAccount(wxAccount);
+            if (null == account) {
+                account = new Account();
+                account.setNickname(nickname);
+                account.setAccount(wxAccount);
+                account.setDescription(description);
+                account.setVname(vname);
+                account.setAvatar(avatar);
+                account.setActive(1);
+                account.setLastPublish(lastPublish);
+                account.setCreatedAt(LocalDateTime.now());
+                account.setUpdatedAt(LocalDateTime.now());
+                accountMapper.insert(account);
+            } else {
+                account.setDescription(description);
+                account.setLastPublish(lastPublish);
+                account.setUpdatedAt(LocalDateTime.now());
+                accountMapper.updateLastPublish(account);
+            }
+
+            String profileUrl = el.selectFirst(".txt-box .tit a[uigs]").attr("href");
+            accountProfile(account, profileUrl);
         }
+    }
+
+    private void accountProfile(Account account, String profileUrl) {
+        Document document = WebClientUtil.getDocument(profileUrl);
+        Elements articleBoxes = document.select(".weui_msg_card_list .weui_msg_card");
+
+        //TODO parse article list
     }
 
     /**

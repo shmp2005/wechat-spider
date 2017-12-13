@@ -27,10 +27,12 @@ public class Article {
      */
     private String msgId;
     private int seq;
+    private boolean origin;
     private String author;
     private String title;
     private LocalDate pubDate;
     private String url;
+    private String postUrl;
     private String digest;
     private String content;
     private LocalDateTime createdAt;

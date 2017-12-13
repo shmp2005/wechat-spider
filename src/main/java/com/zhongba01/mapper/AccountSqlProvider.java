@@ -37,6 +37,16 @@ public class AccountSqlProvider {
         }}.toString();
     }
 
+    public String updateLastPublishSql(final Account account) {
+        return new SQL() {{
+            UPDATE("gou_accounts");
+            SET("description", "#{description}");
+            SET("last_publish", "#{lastPublish}");
+            SET("updated_at", "#{updatedAt}");
+            WHERE("id=" + account.getId());
+        }}.toString();
+    }
+
     public String countSql() {
         return "select count(1) from gou_accounts";
     }

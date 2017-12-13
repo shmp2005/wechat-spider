@@ -26,6 +26,9 @@ public interface AccountMapper {
     @InsertProvider(type = AccountSqlProvider.class, method = "insertSql")
     int insert(Account account);
 
+    @UpdateProvider(type = AccountSqlProvider.class, method = "updateLastPublishSql")
+    boolean updateLastPublish(Account account);
+
     @Results({
             @Result(property = "lastPublish", column = "last_publish"),
             @Result(property = "createdAt", column = "created_at"),
