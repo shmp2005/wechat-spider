@@ -1,4 +1,4 @@
-package com.zhongba01.domain.gou;
+package com.zhongba01.domain;
 
 import lombok.Getter;
 import lombok.Setter;

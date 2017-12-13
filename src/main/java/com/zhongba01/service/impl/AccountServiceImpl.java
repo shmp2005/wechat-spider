@@ -3,8 +3,8 @@ package com.zhongba01.service.impl;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.zhongba01.domain.gou.Account;
-import com.zhongba01.mapper.gou.AccountMapper;
+import com.zhongba01.domain.Account;
+import com.zhongba01.mapper.AccountMapper;
 import com.zhongba01.service.AccountService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Arrays;
 import java.util.List;
 
 /**

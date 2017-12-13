@@ -1,6 +1,6 @@
-package com.zhongba01.mapper.gou;
+package com.zhongba01.mapper;
 
-import com.zhongba01.domain.gou.Account;
+import com.zhongba01.domain.Account;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
