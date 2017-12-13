@@ -35,6 +35,10 @@ public interface AccountMapper {
     @Select("Select * from gou_accounts")
     List<Account> findAll();
 
+    /**
+     * 总的公众号数量
+     * @return 总的公众号数量
+     */
     @Select("select count(1) from gou_accounts")
     int count();
 }
