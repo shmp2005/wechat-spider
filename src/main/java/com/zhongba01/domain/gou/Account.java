@@ -3,6 +3,7 @@ package com.zhongba01.domain.gou;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.ibatis.annotations.Select;
 
 import java.time.LocalDateTime;
 
@@ -37,6 +38,10 @@ public class Account {
     @Getter
     @Setter
     private String avatar;
+
+    @Getter
+    @Setter
+    private LocalDateTime lastPublish;
 
     @Getter
     @Setter

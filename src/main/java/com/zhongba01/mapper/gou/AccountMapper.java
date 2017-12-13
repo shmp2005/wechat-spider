@@ -16,17 +16,19 @@ import java.util.List;
 @Mapper
 public interface AccountMapper {
     @Results({
+            @Result(property = "lastPublish", column = "last_publish"),
             @Result(property = "createdAt", column = "created_at"),
             @Result(property = "updatedAt", column = "updated_at")
     })
     @Select("Select * From gou_accounts WHERE account = #{wxAccount}")
     Account findByWxAccount(@Param("wxAccount") String wxAccount);
 
-    @Insert("insert into gou_accounts(nickname, account, description, avatar, active, created_at, updated_at) values" +
-            "(#{nickname}, #{account}, #{description}, #{avatar}, #{active}, #{createdAt}, #{updatedAt})")
+    @Insert("insert into gou_accounts(nickname, account, description, vname, avatar, last_publish, active, created_at, updated_at) values" +
+            "(#{nickname}, #{account}, #{description}, #{vname}, #{avatar}, #{lastPublish}, #{active}, #{createdAt}, #{updatedAt})")
     int insert(Account account);
 
     @Results({
+            @Result(property = "lastPublish", column = "last_publish"),
             @Result(property = "createdAt", column = "created_at"),
             @Result(property = "updatedAt", column = "updated_at")
     })

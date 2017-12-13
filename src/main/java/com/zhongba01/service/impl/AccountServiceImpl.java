@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Arrays;
 
 /**
  * 中巴价值投资研习社
@@ -24,7 +26,7 @@ import java.time.LocalDateTime;
  */
 @Service
 public class AccountServiceImpl implements AccountService {
-    final static String ROOT_PATH = "http://weixin.sogou.com/weixin";
+    private final static String ROOT_PATH = "http://weixin.sogou.com/weixin";
 
     @Autowired
     AccountMapper accountMapper;
@@ -35,7 +37,7 @@ public class AccountServiceImpl implements AccountService {
 
         try {
             final String query = URLEncoder.encode(keywords, "utf-8");
-            String url = ROOT_PATH + "?query=" + query + "&_sug_type_=&s_from=input&_sug_=y&type=1&page=1&ie=utf8";
+            String url = ROOT_PATH + "?query=" + query + "&_sug_type_=&s_from=input&_sug_=y&type=1&ie=utf8";
             boolean hasNext = true;
 
             //10秒
@@ -67,6 +69,11 @@ public class AccountServiceImpl implements AccountService {
         webClient.close();
     }
 
+    /**
+     * 解析微信公众号信息
+     *
+     * @param elements box集合
+     */
     private void parseAccounts(Elements elements) {
         for (Element el : elements) {
             String avatar = el.selectFirst(".img-box img").attr("src");
@@ -78,12 +85,18 @@ public class AccountServiceImpl implements AccountService {
                 break;
             }
 
-            String description = null;
+            String description = null, vname = null;
+            LocalDateTime lastPublish = null;
             Elements dlList = el.select("dl");
             for (Element dl : dlList) {
                 if ("功能介绍：".equalsIgnoreCase(dl.selectFirst("dt").text())) {
                     description = dl.selectFirst("dd").text();
-                    break;
+                }
+                if ("微信认证：".equalsIgnoreCase(dl.selectFirst("dt").text())) {
+                    vname = dl.selectFirst("dd").text();
+                }
+                if ("最近文章：".equalsIgnoreCase(dl.selectFirst("dt").text())) {
+                    lastPublish = parseTime(dl.selectFirst("dd span script").html());
                 }
             }
 
@@ -91,11 +104,28 @@ public class AccountServiceImpl implements AccountService {
             account.setNickname(nickname);
             account.setAccount(wxAccount);
             account.setDescription(description);
+            account.setVname(vname);
             account.setAvatar(avatar);
             account.setActive(1);
-            account.setUpdatedAt(LocalDateTime.now());
+            account.setLastPublish(lastPublish);
+            account.setCreatedAt(LocalDateTime.now());
             account.setUpdatedAt(LocalDateTime.now());
             accountMapper.insert(account);
         }
+    }
+
+    /**
+     * 解析时间
+     *
+     * @param string，eg: "document.write(timeConvert('1474348154'))"
+     * @return datetime
+     */
+    private LocalDateTime parseTime(String string) {
+        final int expectedLength = 3;
+        String[] array = string.split("'");
+        if (array.length == expectedLength) {
+            return LocalDateTime.ofEpochSecond(Long.valueOf(array[1]), 0, ZoneOffset.ofHours(8));
+        }
+        return null;
     }
 }
