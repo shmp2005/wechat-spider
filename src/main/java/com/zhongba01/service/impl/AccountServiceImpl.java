@@ -17,6 +17,7 @@ import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 中巴价值投资研习社
@@ -63,10 +64,13 @@ public class AccountServiceImpl implements AccountService {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        webClient.close();
+
+        List<Account> accountList = accountMapper.findAll();
+        accountList.forEach(System.out::println);
+
         int count = accountMapper.count();
         System.out.println("共有微信公众号：" + count);
-
-        webClient.close();
     }
 
     /**

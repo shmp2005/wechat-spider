@@ -20,11 +20,10 @@ public interface AccountMapper {
             @Result(property = "createdAt", column = "created_at"),
             @Result(property = "updatedAt", column = "updated_at")
     })
-    @Select("Select * From gou_accounts WHERE account = #{wxAccount}")
-    Account findByWxAccount(@Param("wxAccount") String wxAccount);
+    @SelectProvider(type = AccountSqlProvider.class, method = "findByWxAccountSql")
+    Account findByWxAccount(String wxAccount);
 
-    @Insert("insert into gou_accounts(nickname, account, description, vname, avatar, last_publish, active, created_at, updated_at) values" +
-            "(#{nickname}, #{account}, #{description}, #{vname}, #{avatar}, #{lastPublish}, #{active}, #{createdAt}, #{updatedAt})")
+    @InsertProvider(type = AccountSqlProvider.class, method = "insertSql")
     int insert(Account account);
 
     @Results({
@@ -32,13 +31,14 @@ public interface AccountMapper {
             @Result(property = "createdAt", column = "created_at"),
             @Result(property = "updatedAt", column = "updated_at")
     })
-    @Select("Select * from gou_accounts")
+    @SelectProvider(type = AccountSqlProvider.class, method = "findAllSql")
     List<Account> findAll();
 
     /**
      * 总的公众号数量
+     *
      * @return 总的公众号数量
      */
-    @Select("select count(1) from gou_accounts")
+    @SelectProvider(type = AccountSqlProvider.class, method = "countSql")
     int count();
 }
