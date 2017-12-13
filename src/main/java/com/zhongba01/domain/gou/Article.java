@@ -14,44 +14,25 @@ import java.time.LocalDateTime;
  * @ date: 2017/12/13.
  */
 @ToString
+@Getter
+@Setter
 public class Article {
-    @Getter
-    @Setter
     private Integer id;
-
-    @Getter
-    @Setter
     private Integer accountId;
 
-    @Getter
-    @Setter
+    /**
+     * 两种情况，
+     * 1，一个msgId下面挂一篇文章，seq=1
+     * 2，一个msgId下面挂多篇文章, 用seq来区分
+     */
     private String msgId;
-
-    @Getter
-    @Setter
+    private int seq;
     private String author;
-
-    @Getter
-    @Setter
     private String title;
-
-    @Getter
-    @Setter
     private LocalDate pubDate;
-
-    @Getter
-    @Setter
+    private String url;
     private String digest;
-
-    @Getter
-    @Setter
     private String content;
-
-    @Getter
-    @Setter
     private LocalDateTime createdAt;
-
-    @Getter
-    @Setter
     private LocalDateTime updatedAt;
 }
