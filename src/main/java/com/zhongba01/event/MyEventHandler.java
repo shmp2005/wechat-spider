@@ -17,6 +17,6 @@ public class MyEventHandler {
     @EventListener
     public void event(ApplicationReadyEvent event) {
         AccountService accountService = event.getApplicationContext().getBean(AccountService.class);
-        accountService.dumpAccounts("财富");
+        accountService.dumpAccounts("互联网金融");
     }
 }
