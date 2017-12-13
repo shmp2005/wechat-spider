@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/rice_pro?useUnicode=true&amp;characterEncoding=UTF-8
+    username: root
+    password: root@123
+    driver-class-name: com.mysql.jdbc.Driver
