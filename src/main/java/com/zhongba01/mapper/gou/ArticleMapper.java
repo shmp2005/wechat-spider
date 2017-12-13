@@ -25,8 +25,8 @@ public interface ArticleMapper {
     @Select("Select * From gou_articles WHERE account_id = #{accountId}")
     Article findByAccountId(@Param("accountId") String accountId);
 
-    @Insert("insert into gou_articles(account_id, msg_id, author, title, pub_date, digest, content, created_at, updated_at) values" +
-            "(#{accountId}, #{msgId}, #{author}, #{title}, #{pubDate}, #{digest}, #{content}, #{createdAt}, #{updatedAt})")
+    @Insert("insert into gou_articles(account_id, msg_id, seq, author, title, pub_date, url, digest, content, created_at, updated_at) values" +
+            "(#{accountId}, #{msgId}, #{seq}, #{author}, #{title}, #{pubDate}, #{url}, #{digest}, #{content}, #{createdAt}, #{updatedAt})")
     int insert(Article article);
 
     @Results({
