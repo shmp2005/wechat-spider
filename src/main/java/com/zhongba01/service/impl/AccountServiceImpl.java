@@ -157,8 +157,9 @@ public class AccountServiceImpl implements AccountService {
 
             String detailUrl = WX_ROOT + el.selectFirst(".weui_media_title").attr("hrefs");
             String digest = el.selectFirst(".weui_media_desc").text();
-            //2017年11月28日
+            //2017年11月28日 原创
             String date = el.selectFirst(".weui_media_extra_info").text();
+            date = date.replace("原创", "").trim();
             LocalDate pubDate = parseDate(date);
 
             Article article = new Article();

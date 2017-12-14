@@ -18,8 +18,8 @@ public class MyEventHandler {
     public void event(ApplicationReadyEvent event) {
         AccountService accountService = event.getApplicationContext().getBean(AccountService.class);
 //        accountService.dumpAccounts("互联网金融");
-        String wxAccount = "zhongba01";
-        String profileUrl = "https://mp.weixin.qq.com/profile?src=3&timestamp=1513216767&ver=1&signature=dqGrY*MH23yhL9nvFiRAsyOQs6J-JUEO3IEtKiI0tlacgSzT7qnbtzqRyABBy6B9H94E4qra40IPtcH*DdPzPw==";
+        String wxAccount = "ZGGHZZ";
+        String profileUrl = "https://mp.weixin.qq.com/profile?src=3&timestamp=1513219190&ver=1&signature=Qg6WofCXiyz4M7t2r7JjuBvbvWKvZJnwT33nWV4v5ujD1VXYFfjHT4QXo*YtF8DlaxicMRpoQWo-XhHryG0xYw==";
         accountService.accountProfile(wxAccount, profileUrl);
     }
 }
