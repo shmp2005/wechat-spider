@@ -1,8 +1,9 @@
-# wechat-spider
+# Wechat-spider
 
-````
-2017年12月8日
-自然垄断、心智垄断与寡头的提价是长牛诞生的沃土
-https://mp.weixin.qq.com/s?timestamp=1512725725&src=3&ver=1&signature=CWy3KjpxJx3d5MwRMSWLcLb-1WjMh9n0iOPgdt*4zABGf4rhnivJMtMFlQa6qhnI8rhk70tb0h48JHIkri-6mHr88TfGLplp0HgWBmYGzaBZytSuREtG8MQ3961Qaa9DdLrT4aE*2MiDAOoCmyaSKehQBaF5cefR*Jmdnc15hoY=
-格雷厄姆说过：“最成功的投资必定是最像生意的投资，做投资首先要找到好生意。那究竟什么是好生意呢
-==============================================================
+功能说明：
+### 1，提供关键词，搜索公众号列表
+### 2，循环公众号列表，进入公众号的profile页面
+       提取公众号信息，并保存OR更新 
+### 3，循环公众号profile页面的10+篇文章，保存文章的标题，日期，摘要等等
+       根据msgID是否存在，如果存在，则继续下一篇文章 
+### 4，进入文章详情页面，提取原作者，和文字内容，然后保存。
