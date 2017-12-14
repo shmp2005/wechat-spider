@@ -24,9 +24,13 @@ public interface ArticleMapper {
     @Select("Select * From gou_articles WHERE account_id = #{accountId}")
     Article findByAccountId(@Param("accountId") String accountId);
 
-    @Insert("insert into gou_articles(account_id, msg_id, seq, origin, author, title, pub_date, url, post_url, digest, content, created_at, updated_at) values" +
-            "(#{accountId}, #{msgId}, #{seq}, #{isOrigin}, #{author}, #{title}, #{pubDate}, #{url}, #{postUrl}, #{digest}, #{content}, #{createdAt}, #{updatedAt})")
+    @Insert("insert into gou_articles(account_id, msg_id, seq, origin, title, pub_date, url, post_url, digest, created_at, updated_at) values" +
+            "(#{accountId}, #{msgId}, #{seq}, #{origin}, #{title}, #{pubDate}, #{url}, #{postUrl}, #{digest}, #{createdAt}, #{updatedAt})")
+    @Options(useGeneratedKeys = true)
     int insert(Article article);
+
+    @Update("update gou_articles set author = #{author}, content = #{content} where id = #{id}")
+    void update(@Param("id") int id, @Param("author") String author, @Param("content") String content);
 
     @Results({
             @Result(property = "accountId", column = "account_id"),
@@ -39,4 +43,7 @@ public interface ArticleMapper {
     })
     @Select("Select * from gou_articles")
     List<Article> findAll();
+
+    @Select("select count(msg_id) from gou_articles where msg_id = #{msgId}")
+    int countByMsgId(String msgId);
 }

@@ -24,6 +24,7 @@ public interface AccountMapper {
     Account findByWxAccount(String wxAccount);
 
     @InsertProvider(type = AccountSqlProvider.class, method = "insertSql")
+    @Options(useGeneratedKeys = true)
     int insert(Account account);
 
     @UpdateProvider(type = AccountSqlProvider.class, method = "updateLastPublishSql")
