@@ -17,9 +17,9 @@ public class MyEventHandler {
     @EventListener
     public void event(ApplicationReadyEvent event) {
         AccountService accountService = event.getApplicationContext().getBean(AccountService.class);
-//        accountService.dumpAccounts("互联网金融");
-        String wxAccount = "ZGGHZZ";
-        String profileUrl = "https://mp.weixin.qq.com/profile?src=3&timestamp=1513219190&ver=1&signature=Qg6WofCXiyz4M7t2r7JjuBvbvWKvZJnwT33nWV4v5ujD1VXYFfjHT4QXo*YtF8DlaxicMRpoQWo-XhHryG0xYw==";
-        accountService.accountProfile(wxAccount, profileUrl);
+        accountService.dumpAccounts("价值投资");
+//        String wxAccount = "yc2585728466";
+//        String profileUrl = "https://mp.weixin.qq.com/profile?src=3&timestamp=1513219190&ver=1&signature=A0*5qK1VldQj3xNfk7R3D5a4O-sZg7pGQBh2b44tqbwQbVUhg1L0DbIgsC07BZL0fGx6NGHptMb3ZkNTIykS-Q==";
+//        accountService.accountProfile(wxAccount, profileUrl);
     }
 }

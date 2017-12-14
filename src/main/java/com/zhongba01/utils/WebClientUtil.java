@@ -3,8 +3,11 @@ package com.zhongba01.utils;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.apache.commons.lang3.RandomUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -17,9 +20,11 @@ import java.net.URLEncoder;
  * @ date: 2017/12/13.
  */
 public final class WebClientUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebClientUtil.class);
 
     public static Document getDocument(String url) {
-        return getDocument(url, 3);
+        int seconds = RandomUtils.nextInt(3, 6);
+        return getDocument(url, seconds);
     }
 
     /**
@@ -32,7 +37,7 @@ public final class WebClientUtil {
     public static Document getDocument(String url, int seconds) {
         final HtmlPage htmlPage;
         try (WebClient webClient = new WebClient(BrowserVersion.CHROME)) {
-            System.out.println("getDocument: " + url);
+            LOGGER.info("getDocument: " + url);
             Thread.sleep(seconds * 1000);
 
             htmlPage = webClient.getPage(url);

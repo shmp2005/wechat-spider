@@ -59,10 +59,10 @@ public class AccountServiceImpl implements AccountService {
                 url = GOU_ROOT + nextPage.attr("href");
             }
         }
-        System.out.println("done。秒数：" + (System.currentTimeMillis() - startTime) / 1000);
+        LOGGER.info("done。秒数：" + (System.currentTimeMillis() - startTime) / 1000);
 
         int count = accountMapper.count();
-        System.out.println("共有微信公众号：" + count);
+        LOGGER.info("共有微信公众号：" + count);
     }
 
     /**
@@ -120,61 +120,59 @@ public class AccountServiceImpl implements AccountService {
     public void accountProfile(String wxAccount, String profileUrl) {
         Account account = accountMapper.findByWxAccount(wxAccount);
 
-        List<Article> articleList = new ArrayList<>(10);
-        int seq = 0;
-        String prevMsgId = null;
+        List<Article> articleList = new ArrayList<>(15);
         Document document = WebClientUtil.getDocument(profileUrl);
-        Elements articleBoxes = document.select(".weui_msg_card_list .weui_msg_card");
-        for (Element el : articleBoxes) {
-            String msgId = el.selectFirst(".weui_media_box").attr("msgid");
-            if (prevMsgId == null || prevMsgId.equalsIgnoreCase(msgId)) {
-                seq += 1;
-            } else {
-                seq = 1;
-            }
-            prevMsgId = msgId;
-            String title = el.selectFirst(".weui_media_title").text();
-            Element copyRight = el.selectFirst(".weui_media_title span#copyright_logo");
-            boolean isOrigin = (null != copyRight);
-            if (isOrigin) {
-                title = title.substring(2);
-            }
-
-            int count = articleMapper.countByMsgId(msgId);
-            if (count > 0) {
-                LOGGER.warn("msgId: " + msgId + " 已经存在，忽略。" + title);
-                continue;
-            }
-
-            Element post = el.selectFirst(".weui_media_box span.weui_media_hd");
-            String postUrl = null;
-            if (null != post) {
-                String[] array = post.attr("style").split("[()]");
-                if (array.length == 2) {
-                    postUrl = array[1];
+        Elements articleCards = document.select(".weui_msg_card_list .weui_msg_card");
+        for (Element el : articleCards) {
+            int seq = 1;
+            //同一个card下面可能有多个box，即多篇文章
+            for (Element box : el.select(".weui_media_box.appmsg")) {
+                String msgId = box.attr("msgid");
+                String title = box.selectFirst(".weui_media_title").text();
+                Element copyRight = box.selectFirst(".weui_media_title span#copyright_logo");
+                boolean isOrigin = (null != copyRight);
+                if (isOrigin) {
+                    title = title.substring(2);
                 }
+
+                int count = articleMapper.countByMsgId(msgId);
+                if (count > 0) {
+                    LOGGER.warn("msgId: " + msgId + " 已经存在，忽略。" + title);
+                    continue;
+                }
+
+                Element post = box.selectFirst("span.weui_media_hd");
+                String postUrl = null;
+                if (null != post) {
+                    String[] array = post.attr("style").split("[()]");
+                    if (array.length == 2) {
+                        postUrl = array[1];
+                    }
+                }
+
+                String detailUrl = WX_ROOT + box.selectFirst(".weui_media_title").attr("hrefs");
+                String digest = box.selectFirst(".weui_media_desc").text();
+                //2017年11月28日 原创
+                String date = box.selectFirst(".weui_media_extra_info").text();
+                date = date.replace("原创", "").trim();
+                LocalDate pubDate = parseDate(date);
+
+                Article article = new Article();
+                article.setAccountId(account.getId());
+                article.setMsgId(msgId);
+                article.setSeq(seq);
+                article.setTitle(title);
+                article.setOrigin(isOrigin);
+                article.setPubDate(pubDate);
+                article.setUrl(detailUrl);
+                article.setPostUrl(postUrl);
+                article.setDigest(digest);
+                article.setCreatedAt(LocalDateTime.now());
+                article.setUpdatedAt(LocalDateTime.now());
+                articleList.add(article);
+
+                seq += 1;
             }
-
-            String detailUrl = WX_ROOT + el.selectFirst(".weui_media_title").attr("hrefs");
-            String digest = el.selectFirst(".weui_media_desc").text();
-            //2017年11月28日 原创
-            String date = el.selectFirst(".weui_media_extra_info").text();
-            date = date.replace("原创", "").trim();
-            LocalDate pubDate = parseDate(date);
-
-            Article article = new Article();
-            article.setAccountId(account.getId());
-            article.setMsgId(msgId);
-            article.setSeq(seq);
-            article.setTitle(title);
-            article.setOrigin(isOrigin);
-            article.setPubDate(pubDate);
-            article.setUrl(detailUrl);
-            article.setPostUrl(postUrl);
-            article.setDigest(digest);
-            article.setCreatedAt(LocalDateTime.now());
-            article.setUpdatedAt(LocalDateTime.now());
-            articleList.add(article);
         }
 
         for (Article ar : articleList) {
