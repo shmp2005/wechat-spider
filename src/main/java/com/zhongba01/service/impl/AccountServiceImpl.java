@@ -5,6 +5,7 @@ import com.zhongba01.dao.ArticleDao;
 import com.zhongba01.domain.Account;
 import com.zhongba01.domain.Article;
 import com.zhongba01.service.AccountService;
+import com.zhongba01.utils.DateUtil;
 import com.zhongba01.utils.WebClientUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,10 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,12 +86,12 @@ public class AccountServiceImpl implements AccountService {
                     vname = dl.selectFirst("dd").text();
                 }
                 if ("最近文章：".equalsIgnoreCase(dl.selectFirst("dt").text())) {
-                    lastPublish = parseTime(dl.selectFirst("dd span script").html());
+                    lastPublish = DateUtil.parseTime(dl.selectFirst("dd span script").html());
                 }
             }
 
             Account account = accountDao.findByAccount(wxAccount);
-            Timestamp now = getSqlNow();
+            Timestamp now = DateUtil.getUtcNow();
             if (null == account) {
                 account = new Account();
                 account.setNickname(nickname);
@@ -159,9 +156,9 @@ public class AccountServiceImpl implements AccountService {
                 //2017年11月28日 原创
                 String date = box.selectFirst(".weui_media_extra_info").text();
                 date = date.replace("原创", "").trim();
-                Date pubDate = parseDate(date);
+                Date pubDate = DateUtil.parseDate(date);
 
-                Timestamp now = getSqlNow();
+                Timestamp now = DateUtil.getUtcNow();
                 Article article = new Article();
                 article.setAccountId(account.getId());
                 article.setMsgId(msgId);
@@ -200,47 +197,5 @@ public class AccountServiceImpl implements AccountService {
             ar.setContent(jsContent.html());
             articleDao.save(ar);
         }
-    }
-
-    /**
-     * 解析时间
-     *
-     * @param string，eg: "document.write(timeConvert('1474348154'))"
-     * @return datetime
-     */
-    private Date parseTime(String string) {
-        final int expectedLength = 3;
-        String[] array = string.split("'");
-        if (array.length == expectedLength) {
-            return new Date(Long.valueOf(array[1]) * 1000);
-        }
-        return null;
-    }
-
-    /**
-     * 解析日期字符串为LocalDate
-     *
-     * @param string 2017年11月28日
-     * @return LocalDate
-     */
-    private Date parseDate(String string) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日");
-            java.util.Date date = sdf.parse(string);
-            return new Date(date.getTime());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * 得到当前的UTC时间戳
-     *
-     * @return 当前的UTC时间戳
-     */
-    private Timestamp getSqlNow() {
-        long hour8Offset = 8 * 3600;
-        return new Timestamp(new java.util.Date().getTime() - hour8Offset);
     }
 }
