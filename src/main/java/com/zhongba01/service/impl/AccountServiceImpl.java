@@ -1,9 +1,9 @@
 package com.zhongba01.service.impl;
 
+import com.zhongba01.dao.AccountDao;
+import com.zhongba01.dao.ArticleDao;
 import com.zhongba01.domain.Account;
 import com.zhongba01.domain.Article;
-import com.zhongba01.mapper.AccountMapper;
-import com.zhongba01.mapper.ArticleMapper;
 import com.zhongba01.service.AccountService;
 import com.zhongba01.utils.WebClientUtil;
 import org.jsoup.nodes.Document;
@@ -14,10 +14,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,10 +36,10 @@ public class AccountServiceImpl implements AccountService {
     private final static Logger LOGGER = LoggerFactory.getLogger(AccountServiceImpl.class);
 
     @Autowired
-    AccountMapper accountMapper;
+    AccountDao accountDao;
 
     @Autowired
-    ArticleMapper articleMapper;
+    ArticleDao articleDao;
 
     @Override
     public void dumpAccounts(String keywords) {
@@ -61,7 +63,7 @@ public class AccountServiceImpl implements AccountService {
         }
         LOGGER.info("done。秒数：" + (System.currentTimeMillis() - startTime) / 1000);
 
-        int count = accountMapper.count();
+        long count = accountDao.count();
         LOGGER.info("共有微信公众号：" + count);
     }
 
@@ -77,7 +79,7 @@ public class AccountServiceImpl implements AccountService {
             String wxAccount = el.selectFirst(".txt-box .info label[name='em_weixinhao']").text();
 
             String description = null, vname = null;
-            LocalDateTime lastPublish = null;
+            Date lastPublish = null;
             Elements dlList = el.select("dl");
             for (Element dl : dlList) {
                 if ("功能介绍：".equalsIgnoreCase(dl.selectFirst("dt").text())) {
@@ -91,7 +93,8 @@ public class AccountServiceImpl implements AccountService {
                 }
             }
 
-            Account account = accountMapper.findByWxAccount(wxAccount);
+            Account account = accountDao.findByAccount(wxAccount);
+            Timestamp now = getSqlNow();
             if (null == account) {
                 account = new Account();
                 account.setNickname(nickname);
@@ -99,16 +102,17 @@ public class AccountServiceImpl implements AccountService {
                 account.setDescription(description);
                 account.setVname(vname);
                 account.setAvatar(avatar);
-                account.setActive(1);
+                account.setActive(true);
                 account.setLastPublish(lastPublish);
-                account.setCreatedAt(LocalDateTime.now());
-                account.setUpdatedAt(LocalDateTime.now());
-                accountMapper.insert(account);
+
+                account.setCreatedAt(now);
+                account.setUpdatedAt(now);
+                accountDao.save(account);
             } else {
                 account.setDescription(description);
                 account.setLastPublish(lastPublish);
-                account.setUpdatedAt(LocalDateTime.now());
-                accountMapper.updateLastPublish(account);
+                account.setUpdatedAt(now);
+                accountDao.save(account);
             }
 
             String profileUrl = el.selectFirst(".txt-box .tit a[uigs]").attr("href");
@@ -118,7 +122,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void accountProfile(String wxAccount, String profileUrl) {
-        Account account = accountMapper.findByWxAccount(wxAccount);
+        Account account = accountDao.findByAccount(wxAccount);
 
         List<Article> articleList = new ArrayList<>(15);
         Document document = WebClientUtil.getDocument(profileUrl);
@@ -135,7 +139,7 @@ public class AccountServiceImpl implements AccountService {
                     title = title.substring(2);
                 }
 
-                int count = articleMapper.countByMsgId(msgId);
+                long count = articleDao.countByMsgId(msgId);
                 if (count > 0) {
                     LOGGER.warn("msgId: " + msgId + " 已经存在，忽略。" + title);
                     continue;
@@ -155,8 +159,9 @@ public class AccountServiceImpl implements AccountService {
                 //2017年11月28日 原创
                 String date = box.selectFirst(".weui_media_extra_info").text();
                 date = date.replace("原创", "").trim();
-                LocalDate pubDate = parseDate(date);
+                Date pubDate = parseDate(date);
 
+                Timestamp now = getSqlNow();
                 Article article = new Article();
                 article.setAccountId(account.getId());
                 article.setMsgId(msgId);
@@ -167,8 +172,8 @@ public class AccountServiceImpl implements AccountService {
                 article.setUrl(detailUrl);
                 article.setPostUrl(postUrl);
                 article.setDigest(digest);
-                article.setCreatedAt(LocalDateTime.now());
-                article.setUpdatedAt(LocalDateTime.now());
+                article.setCreatedAt(now);
+                article.setUpdatedAt(now);
                 articleList.add(article);
 
                 seq += 1;
@@ -176,7 +181,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
         for (Article ar : articleList) {
-            articleMapper.insert(ar);
+            articleDao.save(ar);
             Document doc = WebClientUtil.getDocument(ar.getUrl());
             String cssQuery = "#meta_content em.rich_media_meta.rich_media_meta_text";
             String author = null;
@@ -191,7 +196,9 @@ public class AccountServiceImpl implements AccountService {
                 continue;
             }
 
-            articleMapper.update(ar.getId(), author, jsContent.html());
+            ar.setAuthor(author);
+            ar.setContent(jsContent.html());
+            articleDao.save(ar);
         }
     }
 
@@ -201,11 +208,11 @@ public class AccountServiceImpl implements AccountService {
      * @param string，eg: "document.write(timeConvert('1474348154'))"
      * @return datetime
      */
-    private LocalDateTime parseTime(String string) {
+    private Date parseTime(String string) {
         final int expectedLength = 3;
         String[] array = string.split("'");
         if (array.length == expectedLength) {
-            return LocalDateTime.ofEpochSecond(Long.valueOf(array[1]), 0, ZoneOffset.ofHours(8));
+            return new Date(Long.valueOf(array[1]) * 1000);
         }
         return null;
     }
@@ -216,8 +223,24 @@ public class AccountServiceImpl implements AccountService {
      * @param string 2017年11月28日
      * @return LocalDate
      */
-    private LocalDate parseDate(String string) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy年M月d日");
-        return LocalDate.parse(string, dateFormatter);
+    private Date parseDate(String string) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日");
+            java.util.Date date = sdf.parse(string);
+            return new Date(date.getTime());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 得到当前的UTC时间戳
+     *
+     * @return 当前的UTC时间戳
+     */
+    private Timestamp getSqlNow() {
+        long hour8Offset = 8 * 3600;
+        return new Timestamp(new java.util.Date().getTime() - hour8Offset);
     }
 }

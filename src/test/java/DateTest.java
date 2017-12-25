@@ -3,6 +3,7 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * 中巴价值投资研习社
@@ -13,9 +14,10 @@ import java.time.format.DateTimeFormatter;
 public class DateTest {
     @Test
     public void testRandomUtil() {
-        for (int i = 0; i < 100; i++) {
-            System.out.println(RandomUtils.nextInt(3, 8));
-        }
+
+        System.out.println(System.currentTimeMillis());
+        long dd = 1474348154;
+        System.out.println(new Date(dd*1000));
     }
 
     @Test
