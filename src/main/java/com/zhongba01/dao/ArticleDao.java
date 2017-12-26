@@ -11,5 +11,5 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface ArticleDao extends CrudRepository<Article, Long> {
 
-    long countByMsgId(String msgId);
+    long countByUserIdAndMsgId(long userId, String msgId);
 }

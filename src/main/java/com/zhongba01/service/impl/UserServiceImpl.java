@@ -141,9 +141,10 @@ public class UserServiceImpl implements UserService {
                     title = title.substring(2);
                 }
 
-                long count = articleDao.countByMsgId(msgId);
+                long count = articleDao.countByUserIdAndMsgId(user.getId(), msgId);
                 if (count > 0) {
-                    LOGGER.warn("msgId: " + msgId + " 已经存在，忽略。" + title);
+                    LOGGER.warn("userId: " + user.getId() + ", msgId: " + msgId + " 已经存在，忽略。" + title);
+                    LOGGER.warn("profileUrl: " + profileUrl);
                     continue;
                 }
 
@@ -186,6 +187,7 @@ public class UserServiceImpl implements UserService {
             }
             Element jsContent = doc.selectFirst("#js_content");
             if (null == jsContent) {
+                LOGGER.warn("EMPTY js_content: " + ar.getUrl());
                 continue;
             }
 
