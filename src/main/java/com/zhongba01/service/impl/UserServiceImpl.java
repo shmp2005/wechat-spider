@@ -1,5 +1,6 @@
 package com.zhongba01.service.impl;
 
+import com.zhongba01.VerifyCodeException;
 import com.zhongba01.dao.AuthorDao;
 import com.zhongba01.dao.JobDao;
 import com.zhongba01.dao.UserDao;
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserService {
     JobDao jobDao;
 
     @Override
-    public void dumpUser(String weixin) {
+    public void dumpUser(String weixin) throws VerifyCodeException {
         final String query = WebClientUtil.toUtf8(weixin);
         String url = GOU_ROOT + "?query=" + query + "&_sug_type_=&s_from=input&_sug_=y&type=1&ie=utf8";
         long startTime = System.currentTimeMillis();
@@ -82,7 +83,7 @@ public class UserServiceImpl implements UserService {
      * @param weixin   微信号
      * @param elements box集合
      */
-    private void parseUsers(String weixin, Elements elements) {
+    private void parseUsers(String weixin, Elements elements) throws VerifyCodeException {
         for (Element el : elements) {
             String avatar = el.selectFirst(".img-box img").attr("src");
             String nickname = el.selectFirst(".txt-box .tit").text().replace(" ", "");
@@ -125,7 +126,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void userProfile(String weixin, String profileUrl) {
+    public void userProfile(String weixin, String profileUrl) throws VerifyCodeException {
         User user = userDao.findByWeixin(weixin);
         if (null == user) {
             return;

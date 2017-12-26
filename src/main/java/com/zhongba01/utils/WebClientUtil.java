@@ -3,6 +3,7 @@ package com.zhongba01.utils;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.zhongba01.VerifyCodeException;
 import org.apache.commons.lang3.RandomUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -22,9 +23,16 @@ import java.net.URLEncoder;
 public final class WebClientUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebClientUtil.class);
 
-    public static Document getDocument(String url) {
+    public static Document getDocument(String url) throws VerifyCodeException {
         int seconds = RandomUtils.nextInt(3, 6);
-        return getDocument(url, seconds);
+        Document document = getDocument(url, seconds);
+
+        if (null != document.selectFirst("#seccodeInput")) {
+            LOGGER.info(document.html());
+            throw new VerifyCodeException();
+        }
+
+        return document;
     }
 
     /**

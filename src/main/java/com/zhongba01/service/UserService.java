@@ -1,5 +1,6 @@
 package com.zhongba01.service;
 
+import com.zhongba01.VerifyCodeException;
 import com.zhongba01.domain.User;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface UserService {
      *
      * @param weixin 微信公众号账号
      */
-    void dumpUser(String weixin);
+    void dumpUser(String weixin) throws VerifyCodeException;
 
     /**
      * 抓取某公众号对应的最新的10篇文章
@@ -24,7 +25,7 @@ public interface UserService {
      * @param weixin     公众号
      * @param profileUrl 公众号对应的profile
      */
-    void userProfile(String weixin, String profileUrl);
+    void userProfile(String weixin, String profileUrl) throws VerifyCodeException;
 
     /**
      * 可采集的公众号
