@@ -1,9 +1,11 @@
 package com.zhongba01.service.impl;
 
 import com.zhongba01.dao.AuthorDao;
+import com.zhongba01.dao.JobDao;
 import com.zhongba01.dao.UserDao;
 import com.zhongba01.dao.ArticleDao;
 import com.zhongba01.domain.Author;
+import com.zhongba01.domain.Job;
 import com.zhongba01.domain.User;
 import com.zhongba01.domain.Article;
 import com.zhongba01.service.UserService;
@@ -44,6 +46,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     AuthorDao authorDao;
+
+    @Autowired
+    JobDao jobDao;
 
     @Override
     public void dumpUser(String weixin) {
@@ -197,6 +202,9 @@ public class UserServiceImpl implements UserService {
             }
             ar.setContent(jsContent.html());
             articleDao.save(ar);
+
+            //丢一个job
+            createJob(ar.getId());
         }
     }
 
@@ -220,5 +228,21 @@ public class UserServiceImpl implements UserService {
             authorDao.save(author);
         }
         return author;
+    }
+
+    private void createJob(long articleId) {
+        Job job = new Job();
+        Timestamp now = DateUtil.getUtcNow();
+        job.setPriority(100);
+
+        String handler = "\"--- !ruby/object:Delayed::PerformableMethod\\n" +
+                "object: !ruby/class 'Zbq::Wechat::Article'\\nmethod_name: " +
+                ":save_images\\nargs:\\n- " + articleId + "\\n\"";
+        job.setHandler(handler);
+        job.setRunAt(now);
+        job.setCreatedAt(now);
+        job.setUpdatedAt(now);
+
+        jobDao.save(job);
     }
 }
