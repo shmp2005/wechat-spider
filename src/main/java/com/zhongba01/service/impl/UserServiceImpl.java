@@ -236,9 +236,9 @@ public class UserServiceImpl implements UserService {
         Timestamp now = DateUtil.getUtcNow();
         job.setPriority(100);
 
-        String handler = "\"--- !ruby/object:Delayed::PerformableMethod\\n" +
+        String handler = "--- !ruby/object:Delayed::PerformableMethod\\n" +
                 "object: !ruby/class 'Zbq::Wechat::Article'\\nmethod_name: " +
-                ":save_images\\nargs:\\n- " + articleId + "\\n\"";
+                ":save_images\\nargs:\\n- " + articleId + "\\n";
         job.setHandler(handler);
         job.setRunAt(now);
         job.setCreatedAt(now);

@@ -1,3 +1,7 @@
 target/
 .idea/
 src/main/resources/application.yml
+.DS_Store
+src/.DS_Store
+src/main/.DS_Store
+wechat-spider.iml
