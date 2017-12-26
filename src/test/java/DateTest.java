@@ -1,3 +1,5 @@
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.zhongba01.utils.WebClientUtil;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 
@@ -32,5 +34,11 @@ public class DateTest {
     public void substring() {
         String str = "原创人生皆是道场";
         System.out.println(str.substring(2));
+    }
+
+    @Test
+    public void encode(){
+        String string = "FUDANMBA-AMCCLUB";
+        System.out.println(WebClientUtil.toUtf8(string));
     }
 }

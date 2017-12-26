@@ -1,6 +1,6 @@
 package com.zhongba01.dao;
 
-import com.zhongba01.domain.Account;
+import com.zhongba01.domain.Author;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -9,7 +9,6 @@ import org.springframework.data.repository.CrudRepository;
  * @ author: tangjianhua
  * @ date: 2017/12/25.
  */
-public interface AccountDao extends CrudRepository<Account, Long> {
-
-    Account findByAccount(String wxAccount);
+public interface AuthorDao extends CrudRepository<Author, Long> {
+    Author findByName(String name);
 }

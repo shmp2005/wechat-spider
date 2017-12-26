@@ -1,7 +1,7 @@
 package com.zhongba01;
 
-import com.zhongba01.dao.AccountDao;
-import com.zhongba01.service.AccountService;
+import com.zhongba01.dao.UserDao;
+import com.zhongba01.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -21,10 +21,10 @@ public class SpiderTask {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
-    AccountDao accountDao;
+    UserDao accountDao;
 
     @Autowired
-    AccountService accountService;
+    UserService accountService;
 
     @Scheduled(fixedDelay = 5000)
     public void reportTime() throws InterruptedException {

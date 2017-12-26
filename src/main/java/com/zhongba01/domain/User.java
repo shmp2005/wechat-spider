@@ -2,7 +2,6 @@ package com.zhongba01.domain;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
@@ -12,8 +11,8 @@ import java.sql.Timestamp;
  * @ date: 2017/12/13.
  */
 @Entity
-@Table(name = "gou_accounts")
-public class Account implements Serializable {
+@Table(name = "zbq_wechat_users")
+public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -21,17 +20,17 @@ public class Account implements Serializable {
     private Long id;
 
     @Column
-    private String nickname;
+    private String name;
     @Column(unique = true)
-    private String account;
+    private String weixin;
     @Column
-    private String description;
+    private String memo;
     @Column
-    private String vname;
+    private String orgName;
     @Column
     private String avatar;
     @Column
-    private Date lastPublish;
+    private Timestamp lastPublish;
     @Column
     private boolean active;
     @Column(name = "created_at")
@@ -47,36 +46,36 @@ public class Account implements Serializable {
         this.id = id;
     }
 
-    public String getNickname() {
-        return nickname;
+    public String getName() {
+        return name;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getAccount() {
-        return account;
+    public String getWeixin() {
+        return weixin;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
+    public void setWeixin(String weixin) {
+        this.weixin = weixin;
     }
 
-    public String getDescription() {
-        return description;
+    public String getMemo() {
+        return memo;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 
-    public String getVname() {
-        return vname;
+    public String getOrgName() {
+        return orgName;
     }
 
-    public void setVname(String vname) {
-        this.vname = vname;
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
     }
 
     public String getAvatar() {
@@ -87,11 +86,11 @@ public class Account implements Serializable {
         this.avatar = avatar;
     }
 
-    public Date getLastPublish() {
+    public Timestamp getLastPublish() {
         return lastPublish;
     }
 
-    public void setLastPublish(Date lastPublish) {
+    public void setLastPublish(Timestamp lastPublish) {
         this.lastPublish = lastPublish;
     }
 
@@ -121,12 +120,12 @@ public class Account implements Serializable {
 
     @Override
     public String toString() {
-        return "Account{" +
+        return "User{" +
                 "id=" + id +
-                ", nickname='" + nickname + '\'' +
-                ", account='" + account + '\'' +
-                ", description='" + description + '\'' +
-                ", vname='" + vname + '\'' +
+                ", name='" + name + '\'' +
+                ", weixin='" + weixin + '\'' +
+                ", memo='" + memo + '\'' +
+                ", orgName='" + orgName + '\'' +
                 ", avatar='" + avatar + '\'' +
                 ", lastPublish=" + lastPublish +
                 ", active=" + active +

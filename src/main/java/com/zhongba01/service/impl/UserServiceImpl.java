@@ -1,10 +1,12 @@
 package com.zhongba01.service.impl;
 
-import com.zhongba01.dao.AccountDao;
+import com.zhongba01.dao.AuthorDao;
+import com.zhongba01.dao.UserDao;
 import com.zhongba01.dao.ArticleDao;
-import com.zhongba01.domain.Account;
+import com.zhongba01.domain.Author;
+import com.zhongba01.domain.User;
 import com.zhongba01.domain.Article;
-import com.zhongba01.service.AccountService;
+import com.zhongba01.service.UserService;
 import com.zhongba01.utils.DateUtil;
 import com.zhongba01.utils.WebClientUtil;
 import org.jsoup.nodes.Document;
@@ -14,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -27,20 +31,23 @@ import java.util.List;
  * @ date: 2017/12/13.
  */
 @Service
-public class AccountServiceImpl implements AccountService {
+public class UserServiceImpl implements UserService {
     private final static String GOU_ROOT = "http://weixin.sogou.com/weixin";
     private final static String WX_ROOT = "https://mp.weixin.qq.com";
-    private final static Logger LOGGER = LoggerFactory.getLogger(AccountServiceImpl.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
-    AccountDao accountDao;
+    UserDao userDao;
 
     @Autowired
     ArticleDao articleDao;
 
+    @Autowired
+    AuthorDao authorDao;
+
     @Override
-    public void dumpAccounts(String keywords) {
-        final String query = WebClientUtil.toUtf8(keywords);
+    public void dumpUser(String weixin) {
+        final String query = WebClientUtil.toUtf8(weixin);
         String url = GOU_ROOT + "?query=" + query + "&_sug_type_=&s_from=input&_sug_=y&type=1&ie=utf8";
         long startTime = System.currentTimeMillis();
 
@@ -49,7 +56,7 @@ public class AccountServiceImpl implements AccountService {
             Document document = WebClientUtil.getDocument(url);
             Elements elements = document.select(".news-list2 > li");
 
-            parseAccounts(elements);
+            parseUsers(weixin, elements);
 
             Element nextPage = document.selectFirst("#pagebar_container #sogou_next");
             if (null == nextPage) {
@@ -60,66 +67,64 @@ public class AccountServiceImpl implements AccountService {
         }
         LOGGER.info("done。秒数：" + (System.currentTimeMillis() - startTime) / 1000);
 
-        long count = accountDao.count();
+        long count = userDao.count();
         LOGGER.info("共有微信公众号：" + count);
     }
 
     /**
      * 解析微信公众号信息
      *
+     * @param weixin   微信号
      * @param elements box集合
      */
-    private void parseAccounts(Elements elements) {
+    private void parseUsers(String weixin, Elements elements) {
         for (Element el : elements) {
             String avatar = el.selectFirst(".img-box img").attr("src");
             String nickname = el.selectFirst(".txt-box .tit").text().replace(" ", "");
-            String wxAccount = el.selectFirst(".txt-box .info label[name='em_weixinhao']").text();
+            String weixinhao = el.selectFirst(".txt-box .info label[name='em_weixinhao']").text();
+            if (!weixin.equals(weixinhao)) {
+                continue;
+            }
 
-            String description = null, vname = null;
-            Date lastPublish = null;
+            String description = null, orgName = null;
+            Timestamp lastPublish = null;
             Elements dlList = el.select("dl");
             for (Element dl : dlList) {
                 if ("功能介绍：".equalsIgnoreCase(dl.selectFirst("dt").text())) {
                     description = dl.selectFirst("dd").text();
                 }
                 if ("微信认证：".equalsIgnoreCase(dl.selectFirst("dt").text())) {
-                    vname = dl.selectFirst("dd").text();
+                    orgName = dl.selectFirst("dd").text();
                 }
                 if ("最近文章：".equalsIgnoreCase(dl.selectFirst("dt").text())) {
-                    lastPublish = DateUtil.parseTime(dl.selectFirst("dd span script").html());
+                    lastPublish = DateUtil.parseTimestamp(dl.selectFirst("dd span script").html());
                 }
             }
 
-            Account account = accountDao.findByAccount(wxAccount);
-            Timestamp now = DateUtil.getUtcNow();
-            if (null == account) {
-                account = new Account();
-                account.setNickname(nickname);
-                account.setAccount(wxAccount);
-                account.setDescription(description);
-                account.setVname(vname);
-                account.setAvatar(avatar);
-                account.setActive(true);
-                account.setLastPublish(lastPublish);
+            User user = userDao.findByWeixin(weixin);
 
-                account.setCreatedAt(now);
-                account.setUpdatedAt(now);
-                accountDao.save(account);
-            } else {
-                account.setDescription(description);
-                account.setLastPublish(lastPublish);
-                account.setUpdatedAt(now);
-                accountDao.save(account);
+            if (null == user) {
+                continue;
             }
 
+            user.setName(nickname);
+            user.setMemo(description);
+            user.setOrgName(orgName);
+            user.setLastPublish(lastPublish);
+            user.setUpdatedAt(DateUtil.getUtcNow());
+            userDao.save(user);
+
             String profileUrl = el.selectFirst(".txt-box .tit a[uigs]").attr("href");
-            accountProfile(wxAccount, profileUrl);
+            userProfile(weixin, profileUrl);
         }
     }
 
     @Override
-    public void accountProfile(String wxAccount, String profileUrl) {
-        Account account = accountDao.findByAccount(wxAccount);
+    public void userProfile(String weixin, String profileUrl) {
+        User user = userDao.findByWeixin(weixin);
+        if (null == user) {
+            return;
+        }
 
         List<Article> articleList = new ArrayList<>(15);
         Document document = WebClientUtil.getDocument(profileUrl);
@@ -142,15 +147,6 @@ public class AccountServiceImpl implements AccountService {
                     continue;
                 }
 
-                Element post = box.selectFirst("span.weui_media_hd");
-                String postUrl = null;
-                if (null != post) {
-                    String[] array = post.attr("style").split("[()]");
-                    if (array.length == 2) {
-                        postUrl = array[1];
-                    }
-                }
-
                 String detailUrl = WX_ROOT + box.selectFirst(".weui_media_title").attr("hrefs");
                 String digest = box.selectFirst(".weui_media_desc").text();
                 //2017年11月28日 原创
@@ -160,14 +156,13 @@ public class AccountServiceImpl implements AccountService {
 
                 Timestamp now = DateUtil.getUtcNow();
                 Article article = new Article();
-                article.setAccountId(account.getId());
+                article.setUserId(user.getId());
                 article.setMsgId(msgId);
                 article.setSeq(seq);
                 article.setTitle(title);
                 article.setOrigin(isOrigin);
-                article.setPubDate(pubDate);
+                article.setPubTime(pubDate);
                 article.setUrl(detailUrl);
-                article.setPostUrl(postUrl);
                 article.setDigest(digest);
                 article.setCreatedAt(now);
                 article.setUpdatedAt(now);
@@ -179,23 +174,49 @@ public class AccountServiceImpl implements AccountService {
 
         for (Article ar : articleList) {
             articleDao.save(ar);
+
             Document doc = WebClientUtil.getDocument(ar.getUrl());
             String cssQuery = "#meta_content em.rich_media_meta.rich_media_meta_text";
-            String author = null;
+            String authorName = null;
             for (Element el : doc.select(cssQuery)) {
                 if (el.hasAttr("id")) {
                     continue;
                 }
-                author = el.text();
+                authorName = el.text();
             }
             Element jsContent = doc.selectFirst("#js_content");
             if (null == jsContent) {
                 continue;
             }
 
-            ar.setAuthor(author);
+            if (!StringUtils.isEmpty(authorName)) {
+                Author author = findOrCreateAuthor(authorName);
+                ar.setAuthorId(author.getId());
+            }
             ar.setContent(jsContent.html());
             articleDao.save(ar);
         }
+    }
+
+    @Override
+    public List<User> findActives() {
+        return userDao.findByActive(true);
+    }
+
+    private Author findOrCreateAuthor(String authorName) {
+        Assert.notNull(authorName, "authorName isnull");
+
+        Author author = authorDao.findByName(authorName);
+        if (null == author) {
+            author = new Author();
+            Timestamp now = DateUtil.getUtcNow();
+            author.setName(authorName);
+            author.setScore(60L);
+            author.setAliases("");
+            author.setCreatedAt(now);
+            author.setUpdatedAt(now);
+            authorDao.save(author);
+        }
+        return author;
     }
 }

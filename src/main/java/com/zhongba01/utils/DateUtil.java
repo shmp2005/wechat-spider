@@ -12,23 +12,23 @@ import java.text.SimpleDateFormat;
  */
 public final class DateUtil {
 
-    final static long MILLISECONDS_IN_8_HOUR = 8 * 3600 * 1000;
+    private final static long MILLISECONDS_IN_8_HOUR = 8 * 3600 * 1000;
 
     private DateUtil() {
 
     }
 
     /**
-     * 解析时间
+     * 解析时间戳
      *
-     * @param string，eg: "document.write(timeConvert('1474348154'))"
-     * @return datetime
+     * @param string @param string，eg: "document.write(timeConvert('1474348154'))"
+     * @return timestamp
      */
-    public static Date parseTime(String string) {
+    public static Timestamp parseTimestamp(String string) {
         final int expectedLength = 3;
         String[] array = string.split("'");
         if (array.length == expectedLength) {
-            return new Date(Long.valueOf(array[1]) * 1000 - MILLISECONDS_IN_8_HOUR);
+            return new Timestamp(Long.valueOf(array[1]) * 1000 - MILLISECONDS_IN_8_HOUR);
         }
         return null;
     }

@@ -12,15 +12,15 @@ import java.sql.Timestamp;
  * @ date: 2017/12/13.
  */
 @Entity
-@Table(name = "gou_articles")
+@Table(name = "zbq_wechat_articles")
 public class Article implements Serializable {
     private static final long serialVersionUID = 2L;
 
     @Id
     @GeneratedValue
     private Long id;
-    @Column(name = "account_id")
-    private Long accountId;
+    @Column(name = "user_id")
+    private Long userId;
 
     /**
      * 两种情况，
@@ -33,16 +33,14 @@ public class Article implements Serializable {
     private int seq;
     @Column
     private boolean origin;
-    @Column
-    private String author;
+    @Column(name = "author_id")
+    private Long authorId;
     @Column
     private String title;
-    @Column(name = "pub_date")
-    private Date pubDate;
+    @Column(name = "pub_time")
+    private Date pubTime;
     @Column
     private String url;
-    @Column(name = "post_url")
-    private String postUrl;
     @Column
     private String digest;
     @Column
@@ -60,12 +58,12 @@ public class Article implements Serializable {
         this.id = id;
     }
 
-    public Long getAccountId() {
-        return accountId;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getMsgId() {
@@ -92,12 +90,12 @@ public class Article implements Serializable {
         this.origin = origin;
     }
 
-    public String getAuthor() {
-        return author;
+    public Long getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
     }
 
     public String getTitle() {
@@ -108,12 +106,12 @@ public class Article implements Serializable {
         this.title = title;
     }
 
-    public Date getPubDate() {
-        return pubDate;
+    public Date getPubTime() {
+        return pubTime;
     }
 
-    public void setPubDate(Date pubDate) {
-        this.pubDate = pubDate;
+    public void setPubTime(Date pubTime) {
+        this.pubTime = pubTime;
     }
 
     public String getUrl() {
@@ -122,14 +120,6 @@ public class Article implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public String getPostUrl() {
-        return postUrl;
-    }
-
-    public void setPostUrl(String postUrl) {
-        this.postUrl = postUrl;
     }
 
     public String getDigest() {
@@ -168,15 +158,14 @@ public class Article implements Serializable {
     public String toString() {
         return "Article{" +
                 "id=" + id +
-                ", accountId=" + accountId +
+                ", userId=" + userId +
                 ", msgId='" + msgId + '\'' +
                 ", seq=" + seq +
                 ", origin=" + origin +
-                ", author='" + author + '\'' +
+                ", authorId=" + authorId +
                 ", title='" + title + '\'' +
-                ", pubDate=" + pubDate +
+                ", pubTime=" + pubTime +
                 ", url='" + url + '\'' +
-                ", postUrl='" + postUrl + '\'' +
                 ", digest='" + digest + '\'' +
                 ", content='" + content + '\'' +
                 ", createdAt=" + createdAt +
