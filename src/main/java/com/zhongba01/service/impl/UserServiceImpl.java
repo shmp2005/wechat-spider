@@ -154,7 +154,10 @@ public class UserServiceImpl implements UserService {
                     continue;
                 }
 
-                String detailUrl = WX_ROOT + box.selectFirst(".weui_media_title").attr("hrefs");
+                String detailUrl = box.selectFirst(".weui_media_title").attr("hrefs");
+                if (!detailUrl.startsWith("http")) {
+                    detailUrl = WX_ROOT + detailUrl;
+                }
                 String digest = box.selectFirst(".weui_media_desc").text();
                 //2017年11月28日 原创
                 String date = box.selectFirst(".weui_media_extra_info").text();
