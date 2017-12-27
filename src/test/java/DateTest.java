@@ -16,8 +16,8 @@ import java.util.Date;
 public class DateTest {
     @Test
     public void testAuthor(){
-        String str  = "转自：(文 | ：:老?杨)";
-        str = str.replaceAll("[\\(\\):：?]", "");
+        String str  = "转自：(文 | ：:老?杨@)";
+        str = str.replaceAll("[\\(\\):：?@]", "");
         str = str.replaceAll("[文/|文 \\||作者|转自|转载]", "");
         System.out.println(str);
     }
