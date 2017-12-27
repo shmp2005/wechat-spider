@@ -1,11 +1,4 @@
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.zhongba01.utils.WebClientUtil;
-import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 /**
  * 中巴价值投资研习社
