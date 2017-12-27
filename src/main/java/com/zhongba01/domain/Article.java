@@ -43,6 +43,10 @@ public class Article implements Serializable {
     private String url;
     @Column
     private String digest;
+
+    @Column
+    private String memo;
+
     @Column
     private String content;
     @Column(name = "created_at")
@@ -130,6 +134,14 @@ public class Article implements Serializable {
         this.digest = digest;
     }
 
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
     public String getContent() {
         return content;
     }
@@ -166,6 +178,7 @@ public class Article implements Serializable {
                 ", title='" + title + '\'' +
                 ", pubTime=" + pubTime +
                 ", url='" + url + '\'' +
+                ", memo='" + memo + '\'' +
                 ", digest='" + digest + '\'' +
                 ", content='" + content + '\'' +
                 ", createdAt=" + createdAt +

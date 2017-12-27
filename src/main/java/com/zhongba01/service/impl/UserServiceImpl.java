@@ -71,10 +71,7 @@ public class UserServiceImpl implements UserService {
                 url = GOU_ROOT + nextPage.attr("href");
             }
         }
-        LOGGER.info("done。秒数：" + (System.currentTimeMillis() - startTime) / 1000);
-
-        long count = userDao.count();
-        LOGGER.info("共有微信公众号：" + count);
+        LOGGER.info("weixin: " + weixin + ", done。秒数：" + (System.currentTimeMillis() - startTime) / 1000);
     }
 
     /**
@@ -169,7 +166,7 @@ public class UserServiceImpl implements UserService {
                 article.setUserId(user.getId());
                 article.setMsgId(msgId);
                 article.setSeq(seq);
-                article.setTitle(title);
+                article.setTitle(title.trim());
                 article.setOrigin(isOrigin);
                 article.setPubTime(pubDate);
                 article.setUrl(detailUrl);
@@ -194,6 +191,27 @@ public class UserServiceImpl implements UserService {
                 }
                 authorName = el.text();
             }
+
+            Element jsShareContent = doc.selectFirst("#js_share_content");
+            if (null != jsShareContent) {
+                Element jsShareAuthor = jsShareContent.selectFirst("#js_share_author");
+                Element jsShareSource = jsShareContent.selectFirst("#js_share_source");
+
+                String memo = ar.getMemo();
+                memo = (memo == null ? "" : memo);
+                if (null != jsShareAuthor) {
+                    memo += "; " + jsShareAuthor.text();
+                }
+                if (null != jsShareSource) {
+                    memo += "; " + jsShareSource.attr("href");
+                }
+                ar.setMemo(memo);
+                articleDao.save(ar);
+
+                LOGGER.warn("articleID: " + ar.getId() + ", memo: " + ar.getMemo());
+                continue;
+            }
+
             Element jsContent = doc.selectFirst("#js_content");
             if (null == jsContent) {
                 LOGGER.warn("EMPTY js_content: " + ar.getUrl());

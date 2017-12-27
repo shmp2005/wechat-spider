@@ -32,8 +32,10 @@ public class DateTest {
 
     @Test
     public void substring() {
-        String str = "原创人生皆是道场";
-        System.out.println(str.substring(2));
+        String str = null;
+        StringBuilder sb = new StringBuilder(str + "");
+        sb.append("atang");
+        System.out.println(sb.toString());
     }
 
     @Test
