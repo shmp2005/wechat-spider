@@ -15,32 +15,10 @@ import java.util.Date;
  */
 public class DateTest {
     @Test
-    public void testRandomUtil() {
-
-        System.out.println(System.currentTimeMillis());
-        long dd = 1474348154;
-        System.out.println(new Date(dd*1000));
-    }
-
-    @Test
-    public void testDate() {
-        String date = "2017年11月28日";
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
-        LocalDate dateTime = LocalDate.parse(date, dateFormatter);
-        System.out.println(dateTime);
-    }
-
-    @Test
-    public void substring() {
-        String str = null;
-        StringBuilder sb = new StringBuilder(str + "");
-        sb.append("atang");
-        System.out.println(sb.toString());
-    }
-
-    @Test
-    public void encode(){
-        String string = "FUDANMBA-AMCCLUB";
-        System.out.println(WebClientUtil.toUtf8(string));
+    public void testAuthor(){
+        String str  = "转自：(文 | ：:老?杨)";
+        str = str.replaceAll("[\\(\\):：?]", "");
+        str = str.replaceAll("[文/|文 \\||作者|转自|转载]", "");
+        System.out.println(str);
     }
 }

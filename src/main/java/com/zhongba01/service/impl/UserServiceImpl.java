@@ -249,6 +249,11 @@ public class UserServiceImpl implements UserService {
     private Author findOrCreateAuthor(String authorName) {
         Assert.notNull(authorName, "authorName isnull");
 
+        //移除特殊字符，规范作者名称
+        authorName = authorName.replaceAll("[\\(\\):：?]", "");
+        authorName = authorName.replaceAll("[文/|文 \\||作者|转自|转载]", "");
+        authorName = authorName.trim();
+
         Author author = authorDao.findByName(authorName);
         if (null == author) {
             author = new Author();
