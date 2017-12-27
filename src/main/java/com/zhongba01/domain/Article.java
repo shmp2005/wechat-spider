@@ -177,9 +177,8 @@ public class Article implements Serializable {
         return stateMemo;
     }
 
-    //IMPORTANT!! 特殊处理
     public void setStateMemo(String stateMemo) {
-        this.stateMemo += ", " + stateMemo;
+        this.stateMemo = stateMemo;
     }
 
     public Timestamp getCreatedAt() {
