@@ -32,7 +32,7 @@ public final class WebClientUtil {
         int seconds = RandomUtils.nextInt(3, 6);
         Document document = getDocument(url, seconds);
 
-        if (null != document.selectFirst("#seccodeInput")) {
+        if (null != document.selectFirst(".verifycode")) {
             LOGGER.info(document.html());
             throw new VerifyCodeException();
         }
