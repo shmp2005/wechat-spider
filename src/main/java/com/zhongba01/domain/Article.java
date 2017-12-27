@@ -49,6 +49,13 @@ public class Article implements Serializable {
 
     @Column
     private String content;
+    @Column
+    private int words;
+    @Column
+    private String state;
+    @Column(name = "state_memo")
+    private String stateMemo;
+
     @Column(name = "created_at")
     private Timestamp createdAt;
     @Column(name = "updated_at")
@@ -150,6 +157,31 @@ public class Article implements Serializable {
         this.content = content;
     }
 
+    public int getWords() {
+        return words;
+    }
+
+    public void setWords(int words) {
+        this.words = words;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getStateMemo() {
+        return stateMemo;
+    }
+
+    //IMPORTANT!! 特殊处理
+    public void setStateMemo(String stateMemo) {
+        this.stateMemo += ", " + stateMemo;
+    }
+
     public Timestamp getCreatedAt() {
         return createdAt;
     }
@@ -178,9 +210,12 @@ public class Article implements Serializable {
                 ", title='" + title + '\'' +
                 ", pubTime=" + pubTime +
                 ", url='" + url + '\'' +
-                ", memo='" + memo + '\'' +
                 ", digest='" + digest + '\'' +
+                ", memo='" + memo + '\'' +
                 ", content='" + content + '\'' +
+                ", words=" + words +
+                ", state='" + state + '\'' +
+                ", stateMemo='" + stateMemo + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';

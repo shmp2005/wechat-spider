@@ -171,6 +171,9 @@ public class UserServiceImpl implements UserService {
                 article.setOrigin(isOrigin);
                 article.setPubTime(pubDate);
                 article.setUrl(detailUrl);
+                article.setWords(0);
+                article.setState("new");
+                article.setStateMemo("抓列表");
                 article.setDigest(digest);
                 article.setCreatedAt(now);
                 article.setUpdatedAt(now);
@@ -207,6 +210,8 @@ public class UserServiceImpl implements UserService {
                     memo += "; " + jsShareSource.attr("href");
                 }
                 ar.setMemo(memo);
+                ar.setState("bad");
+                ar.setStateMemo("文章转载");
                 articleDao.save(ar);
 
                 LOGGER.warn("articleID: " + ar.getId() + ", memo: " + ar.getMemo());
@@ -216,6 +221,8 @@ public class UserServiceImpl implements UserService {
             Element jsContent = doc.selectFirst("#js_content");
             if (null == jsContent) {
                 LOGGER.warn("EMPTY js_content: " + ar.getUrl());
+                ar.setState("bad");
+                ar.setStateMemo("内容为空");
                 continue;
             }
 
@@ -224,6 +231,9 @@ public class UserServiceImpl implements UserService {
                 ar.setAuthorId(author.getId());
             }
             ar.setContent(jsContent.html());
+            ar.setWords(jsContent.text().length());
+            ar.setState("detail");
+            ar.setStateMemo("抓明细");
             articleDao.save(ar);
 
             //丢一个job
