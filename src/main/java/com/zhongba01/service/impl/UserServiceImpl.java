@@ -110,6 +110,7 @@ public class UserServiceImpl implements UserService {
                 continue;
             }
 
+            user.setAvatar(avatar);
             user.setName(nickname);
             user.setMemo(description);
             user.setOrgName(orgName);
