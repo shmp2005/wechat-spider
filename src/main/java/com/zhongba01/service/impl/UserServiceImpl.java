@@ -185,6 +185,7 @@ public class UserServiceImpl implements UserService {
 
         for (Article ar : articleList) {
             articleDao.save(ar);
+            LOGGER.info("新增成功, id:" + ar.getId() + ", " + ar.getTitle());
 
             Document doc = WebClientUtil.getDocument(ar.getUrl());
             String cssQuery = "#meta_content em.rich_media_meta.rich_media_meta_text";
@@ -235,6 +236,7 @@ public class UserServiceImpl implements UserService {
             ar.setState("detail");
             ar.setStateMemo("抓明细");
             articleDao.save(ar);
+            LOGGER.info("抓明细：" + ar.getTitle());
 
             //丢一个job
             createJob(ar.getId());
@@ -264,6 +266,7 @@ public class UserServiceImpl implements UserService {
             author.setCreatedAt(now);
             author.setUpdatedAt(now);
             authorDao.save(author);
+            LOGGER.info("新增author: " + author.getName());
         }
         return author;
     }
