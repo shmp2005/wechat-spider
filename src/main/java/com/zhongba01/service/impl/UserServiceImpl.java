@@ -78,6 +78,7 @@ public class UserServiceImpl implements UserService {
         }
         long seconds = (System.currentTimeMillis() - startTime) / 1000;
         LOGGER.info("uid: " + user.getId() + ", weixin: " + weixin + ", done。秒数：" + seconds);
+        LOGGER.info("======================================================");
     }
 
     /**
