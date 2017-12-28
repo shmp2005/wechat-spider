@@ -53,6 +53,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void dumpUser(String weixin) throws VerifyCodeException {
+        User user = userDao.findByWeixin(weixin);
+        if (null == user) {
+            return;
+        }
+
         final String query = WebClientUtil.toUtf8(weixin);
         String url = GOU_ROOT + "?query=" + query + "&_sug_type_=&s_from=input&_sug_=y&type=1&ie=utf8";
         long startTime = System.currentTimeMillis();
@@ -71,7 +76,8 @@ public class UserServiceImpl implements UserService {
                 url = GOU_ROOT + nextPage.attr("href");
             }
         }
-        LOGGER.info("weixin: " + weixin + ", done。秒数：" + (System.currentTimeMillis() - startTime) / 1000);
+        long seconds = (System.currentTimeMillis() - startTime) / 1000;
+        LOGGER.info("uid: " + user.getId() + ", weixin: " + weixin + ", done。秒数：" + seconds);
     }
 
     /**
