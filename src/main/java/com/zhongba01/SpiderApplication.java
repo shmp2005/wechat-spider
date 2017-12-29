@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @ date: 2017/12/8.
  */
 @SpringBootApplication
-//@EnableScheduling
+@EnableScheduling
 public class SpiderApplication {
     public static void main(String[] args) {
         SpringApplication.run(SpiderApplication.class, args);

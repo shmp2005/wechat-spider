@@ -20,16 +20,16 @@ public class MyEventHandler {
 
     @EventListener
     public void event(ApplicationReadyEvent event) {
-        UserService userService = event.getApplicationContext().getBean(UserService.class);
-
-        List<User> users = userService.findActives();
-        for (User s : users) {
-            try {
-                userService.dumpUser(s.getWeixin());
-            } catch (VerifyCodeException e) {
-                e.printStackTrace();
-                break;
-            }
-        }
+//        UserService userService = event.getApplicationContext().getBean(UserService.class);
+//
+//        List<User> users = userService.findActives();
+//        for (User s : users) {
+//            try {
+//                userService.dumpUser(s.getWeixin());
+//            } catch (VerifyCodeException e) {
+//                e.printStackTrace();
+//                break;
+//            }
+//        }
     }
 }
