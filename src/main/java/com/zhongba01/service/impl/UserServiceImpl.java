@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
         boolean hasNext = true;
         while (hasNext) {
             Document document = WebClientUtil.getDocument(url);
-            Elements elements = document.select(".news-list2 > li");
+            Elements elements = document.select(".news-list2 li[id^='sogou_vr']");
 
             parseUsers(weixin, elements);
 
