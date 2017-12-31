@@ -33,6 +33,7 @@ public class MyEventHandler {
             try {
                 userService.dumpUser(s.getWeixin());
             } catch (VerifyCodeException e) {
+                LOGGER.error(e.getLocalizedMessage());
                 e.printStackTrace();
                 break;
             }
