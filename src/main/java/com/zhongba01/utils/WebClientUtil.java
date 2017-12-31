@@ -52,6 +52,7 @@ public final class WebClientUtil {
         try (WebClient webClient = simpleWebClient()) {
             LOGGER.info("getDocument: " + url);
             Thread.sleep(seconds * 1000);
+            LOGGER.info("Sleep: " + seconds + " 秒。");
 
             htmlPage = webClient.getPage(url);
             return Jsoup.parse(htmlPage.asXml());
