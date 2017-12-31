@@ -33,7 +33,7 @@ public final class WebClientUtil {
         Document document = getDocument(url, seconds);
 
         if (null != document.selectFirst(".verifycode")) {
-            LOGGER.info(document.html());
+//            LOGGER.info(document.html());
             throw new VerifyCodeException();
         }
 
