@@ -18,6 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Arrays;
 
 /**
  * 中巴价值投资研习社
@@ -51,8 +52,8 @@ public final class WebClientUtil {
         final HtmlPage htmlPage;
         try (WebClient webClient = simpleWebClient()) {
             LOGGER.info("getDocument: " + url);
-            Thread.sleep(seconds * 1000);
             LOGGER.info("Sleep: " + seconds + " 秒。");
+            Thread.sleep(seconds * 1000);
 
             htmlPage = webClient.getPage(url);
             return Jsoup.parse(htmlPage.asXml());
@@ -72,7 +73,11 @@ public final class WebClientUtil {
     }
 
     private static WebClient simpleWebClient() {
-        WebClient webClient = new WebClient(BrowserVersion.CHROME);
+
+        WebClient webClient = new WebClient(randBrowserVersion());
+        String ip = getIP();
+        webClient.addRequestHeader("X-Forwarded-For", ip);
+        webClient.addRequestHeader("CLIENT-IP", ip);
         webClient.setCssErrorHandler(new SilentCssErrorHandler());
         webClient.setIncorrectnessListener(new IncorrectnessListener() {
             @Override
@@ -92,5 +97,26 @@ public final class WebClientUtil {
             }
         });
         return webClient;
+    }
+
+    private static String getIP() {
+        String[] segments = new String[]{
+                RandomUtils.nextInt(110, 216) + "",
+                RandomUtils.nextInt(29, 200) + "",
+                RandomUtils.nextInt(10, 255) + "",
+                RandomUtils.nextInt(1, 200) + ""};
+        return String.join(".", segments);
+    }
+
+    private static BrowserVersion randBrowserVersion() {
+        BrowserVersion[] browsers = new BrowserVersion[]{
+                BrowserVersion.CHROME,
+                BrowserVersion.EDGE,
+                BrowserVersion.FIREFOX_45,
+                BrowserVersion.FIREFOX_52,
+                BrowserVersion.INTERNET_EXPLORER
+        };
+        int index = RandomUtils.nextInt(0, browsers.length);
+        return browsers[index];
     }
 }
