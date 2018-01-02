@@ -57,7 +57,7 @@ public final class WebClientUtil {
 
             htmlPage = webClient.getPage(url);
             return Jsoup.parse(htmlPage.asXml());
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new Document(url);
