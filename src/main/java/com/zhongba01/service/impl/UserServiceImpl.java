@@ -1,14 +1,8 @@
 package com.zhongba01.service.impl;
 
 import com.zhongba01.VerifyCodeException;
-import com.zhongba01.dao.AuthorDao;
-import com.zhongba01.dao.JobDao;
-import com.zhongba01.dao.UserDao;
-import com.zhongba01.dao.ArticleDao;
-import com.zhongba01.domain.Author;
-import com.zhongba01.domain.Job;
-import com.zhongba01.domain.User;
-import com.zhongba01.domain.Article;
+import com.zhongba01.dao.*;
+import com.zhongba01.domain.*;
 import com.zhongba01.service.UserService;
 import com.zhongba01.utils.DateUtil;
 import com.zhongba01.utils.WebClientUtil;
@@ -51,10 +45,19 @@ public class UserServiceImpl implements UserService {
     @Autowired
     JobDao jobDao;
 
+    @Autowired
+    SourceDao sourceDao;
+
     @Override
     public void dumpUser(String weixin) throws VerifyCodeException {
         User user = userDao.findByWeixin(weixin);
         if (null == user) {
+            return;
+        }
+
+        Source source = sourceDao.findOne(user.getSourceId());
+        if (null == source || !source.isActive()) {
+            LOGGER.warn("wechat user: " + user.getId() + " source disabled.");
             return;
         }
 

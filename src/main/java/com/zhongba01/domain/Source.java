@@ -8,32 +8,23 @@ import java.sql.Timestamp;
  * 中巴价值投资研习社
  *
  * @ author: tangjianhua
- * @ date: 2017/12/13.
+ * @ date: 2018/01/02.
  */
 @Entity
-@Table(name = "zbq_wechat_users")
-public class User implements Serializable {
+@Table(name = "zbq_sources")
+public class Source implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @Column(name = "source_id")
-    private Long sourceId;
-
     @Column
     private String name;
-    @Column(unique = true)
-    private String weixin;
+    @Column(name = "value_stars")
+    private Integer valueStars;
     @Column
-    private String memo;
-    @Column
-    private String orgName;
-    @Column
-    private String avatar;
-    @Column
-    private Timestamp lastPublish;
+    private Long score;
     @Column
     private boolean active;
     @Column(name = "created_at")
@@ -49,14 +40,6 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public Long getSourceId() {
-        return sourceId;
-    }
-
-    public void setSourceId(Long sourceId) {
-        this.sourceId = sourceId;
-    }
-
     public String getName() {
         return name;
     }
@@ -65,44 +48,20 @@ public class User implements Serializable {
         this.name = name;
     }
 
-    public String getWeixin() {
-        return weixin;
+    public Integer getValueStars() {
+        return valueStars;
     }
 
-    public void setWeixin(String weixin) {
-        this.weixin = weixin;
+    public void setValueStars(Integer valueStars) {
+        this.valueStars = valueStars;
     }
 
-    public String getMemo() {
-        return memo;
+    public Long getScore() {
+        return score;
     }
 
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
-
-    public String getOrgName() {
-        return orgName;
-    }
-
-    public void setOrgName(String orgName) {
-        this.orgName = orgName;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public Timestamp getLastPublish() {
-        return lastPublish;
-    }
-
-    public void setLastPublish(Timestamp lastPublish) {
-        this.lastPublish = lastPublish;
+    public void setScore(Long score) {
+        this.score = score;
     }
 
     public boolean isActive() {
@@ -131,15 +90,11 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Source{" +
                 "id=" + id +
-                "sourceId=" + sourceId +
                 ", name='" + name + '\'' +
-                ", weixin='" + weixin + '\'' +
-                ", memo='" + memo + '\'' +
-                ", orgName='" + orgName + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", lastPublish=" + lastPublish +
+                ", valueStars=" + valueStars +
+                ", score=" + score +
                 ", active=" + active +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
