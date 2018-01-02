@@ -19,13 +19,12 @@ public class DateTest {
     @Test
     public void testWebClient() {
         String url = "https://www.zhongba01.com/about.html";
-        for (int i = 0; i < 10; i++) {
-            try {
-                WebClientUtil.getDocument(url, 2);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-
+//        for (int i = 0; i < 10; i++) {
+//            try {
+//                WebClientUtil.getDocument(url, 2);
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//            }
+//        }
     }
 }
