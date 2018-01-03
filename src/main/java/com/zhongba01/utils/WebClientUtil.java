@@ -51,8 +51,8 @@ public final class WebClientUtil {
     public static Document getDocument(String url, int seconds) {
         final HtmlPage htmlPage;
         try (WebClient webClient = simpleWebClient()) {
-            LOGGER.info("getDocument: " + url);
-            LOGGER.info("Sleep: " + seconds + " 秒。");
+            LOGGER.info(webClient.getBrowserVersion().getNickname() + "; getDoc: " + url);
+            LOGGER.info("Will sleep: " + seconds + " 秒。");
             Thread.sleep(seconds * 1000);
 
             htmlPage = webClient.getPage(url);
@@ -73,11 +73,7 @@ public final class WebClientUtil {
     }
 
     private static WebClient simpleWebClient() {
-
         WebClient webClient = new WebClient(randBrowserVersion());
-        String ip = getIP();
-        webClient.addRequestHeader("X-Forwarded-For", ip);
-        webClient.addRequestHeader("CLIENT-IP", ip);
         webClient.setCssErrorHandler(new SilentCssErrorHandler());
         webClient.setIncorrectnessListener(new IncorrectnessListener() {
             @Override
