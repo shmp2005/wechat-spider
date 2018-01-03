@@ -1,5 +1,8 @@
+import com.zhongba01.utils.DateUtil;
 import com.zhongba01.utils.WebClientUtil;
 import org.junit.Test;
+
+import java.sql.Timestamp;
 
 /**
  * 中巴价值投资研习社
@@ -18,13 +21,8 @@ public class DateTest {
 
     @Test
     public void testWebClient() {
-        String url = "https://www.zhongba01.com/about.html";
-//        for (int i = 0; i < 10; i++) {
-//            try {
-//                WebClientUtil.getDocument(url, 2);
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//        }
+        String text = "document.write(timeConvert('1514962942'))";
+        Timestamp ts = DateUtil.parseTimestamp(text);
+        System.out.println(ts);
     }
 }

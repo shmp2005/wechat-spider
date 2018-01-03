@@ -107,10 +107,8 @@ public final class WebClientUtil {
     private static BrowserVersion randBrowserVersion() {
         BrowserVersion[] browsers = new BrowserVersion[]{
                 BrowserVersion.CHROME,
-                BrowserVersion.EDGE,
                 BrowserVersion.FIREFOX_45,
-                BrowserVersion.FIREFOX_52,
-                BrowserVersion.INTERNET_EXPLORER
+                BrowserVersion.FIREFOX_52
         };
         int index = RandomUtils.nextInt(0, browsers.length);
         return browsers[index];

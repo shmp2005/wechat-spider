@@ -132,8 +132,8 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
-                "sourceId=" + sourceId +
+                "id=" + id + '\'' +
+                ", sourceId=" + sourceId +
                 ", name='" + name + '\'' +
                 ", weixin='" + weixin + '\'' +
                 ", memo='" + memo + '\'' +

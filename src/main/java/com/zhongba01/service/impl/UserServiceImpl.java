@@ -128,6 +128,7 @@ public class UserServiceImpl implements UserService {
             user.setUpdatedAt(DateUtil.getUtcNow());
             userDao.save(user);
 
+            LOGGER.info(user.toString());
             String profileUrl = el.selectFirst(".txt-box .tit a[uigs]").attr("href");
             userProfile(weixin, profileUrl);
         }
