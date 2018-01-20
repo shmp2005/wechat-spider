@@ -10,6 +10,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -21,6 +22,7 @@ import java.util.List;
 @Component
 public class MyEventHandler {
     final static Logger LOGGER = LoggerFactory.getLogger(MyEventHandler.class);
+    final static int HOURS = 24;
 
     @Autowired
     UserService userService;
@@ -29,7 +31,14 @@ public class MyEventHandler {
     public void event(ApplicationReadyEvent event) {
         LOGGER.info("Begin craw Wechat...");
         List<User> users = userService.findActives();
+        int hour = LocalDateTime.now().getHour();
+        LOGGER.info("Current hour: " + hour + ", active user count: " + users.size());
+
         for (User s : users) {
+            if ((s.getId() % HOURS) != hour) {
+                LOGGER.info("ignored userID: " + s.getId());
+                continue;
+            }
             try {
                 userService.dumpUser(s.getWeixin());
             } catch (VerifyCodeException e) {
