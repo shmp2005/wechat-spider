@@ -256,7 +256,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findActives() {
-        return userDao.findByActive(true);
+        return userDao.findByActiveOrderByCrawlAt(true);
+    }
+
+    @Override
+    public void updateCrawlAt(User user) {
+        userDao.save(user);
     }
 
     private Author findOrCreateAuthor(String authorName) {

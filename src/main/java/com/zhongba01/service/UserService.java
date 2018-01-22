@@ -33,4 +33,6 @@ public interface UserService {
      * @return users
      */
     List<User> findActives();
+
+    void updateCrawlAt(User user);
 }

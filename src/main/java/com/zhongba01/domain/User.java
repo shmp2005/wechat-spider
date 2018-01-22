@@ -36,6 +36,10 @@ public class User implements Serializable {
     private Timestamp lastPublish;
     @Column
     private boolean active;
+
+    @Column(name = "crawl_At")
+    private Timestamp crawlAt;
+
     @Column(name = "created_at")
     private Timestamp createdAt;
     @Column(name = "updated_at")
@@ -113,6 +117,14 @@ public class User implements Serializable {
         this.active = active;
     }
 
+    public Timestamp getCrawlAt() {
+        return crawlAt;
+    }
+
+    public void setCrawlAt(Timestamp crawlAt) {
+        this.crawlAt = crawlAt;
+    }
+
     public Timestamp getCreatedAt() {
         return createdAt;
     }
@@ -141,6 +153,7 @@ public class User implements Serializable {
                 ", avatar='" + avatar + '\'' +
                 ", lastPublish=" + lastPublish +
                 ", active=" + active +
+                ", crawlAt=" + crawlAt +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';

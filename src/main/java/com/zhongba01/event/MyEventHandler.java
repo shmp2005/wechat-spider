@@ -3,6 +3,7 @@ package com.zhongba01.event;
 import com.zhongba01.VerifyCodeException;
 import com.zhongba01.domain.User;
 import com.zhongba01.service.UserService;
+import com.zhongba01.utils.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -39,6 +41,9 @@ public class MyEventHandler {
                 LOGGER.error(e.getLocalizedMessage());
                 e.printStackTrace();
                 break;
+            } finally {
+                s.setCrawlAt(DateUtil.getUtcNow());
+                userService.updateCrawlAt(s);
             }
         }
         LOGGER.info("End craw Wechat。");

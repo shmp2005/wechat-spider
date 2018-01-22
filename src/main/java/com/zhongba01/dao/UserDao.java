@@ -15,5 +15,5 @@ public interface UserDao extends CrudRepository<User, Long> {
 
     User findByWeixin(String weixin);
 
-    List<User> findByActive(boolean active);
+    List<User> findByActiveOrderByCrawlAt(boolean active);
 }
