@@ -1,6 +1,7 @@
 package com.zhongba01.event;
 
 import com.zhongba01.VerifyCodeException;
+import com.zhongba01.dao.UserDao;
 import com.zhongba01.domain.User;
 import com.zhongba01.service.UserService;
 import com.zhongba01.utils.DateUtil;
@@ -42,8 +43,7 @@ public class MyEventHandler {
                 e.printStackTrace();
                 break;
             } finally {
-                s.setCrawlAt(DateUtil.getUtcNow());
-                userService.updateCrawlAt(s);
+                userService.saveCrawlAt(s.getWeixin());
             }
         }
         LOGGER.info("End craw Wechat。");

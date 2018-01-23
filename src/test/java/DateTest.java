@@ -25,11 +25,4 @@ public class DateTest {
         Timestamp ts = DateUtil.parseTimestamp(text);
         System.out.println(ts);
     }
-
-    @Test
-    public void testMod(){
-        for (int i = 0; i < 60; i++) {
-            System.out.println(i % 24 + " of " + i);
-        }
-    }
 }

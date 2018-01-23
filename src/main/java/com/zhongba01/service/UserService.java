@@ -34,5 +34,5 @@ public interface UserService {
      */
     List<User> findActives();
 
-    void updateCrawlAt(User user);
+    void saveCrawlAt(String weixin);
 }

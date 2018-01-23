@@ -260,8 +260,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateCrawlAt(User user) {
+    public void saveCrawlAt(String weixin) {
+        User user = userDao.findByWeixin(weixin);
+        user.setCrawlAt(DateUtil.getUtcNow());
         userDao.save(user);
+        LOGGER.info("saveCrawlAt: UID: " + user.getId() + ", crawlAt: " + user.getCrawlAt());
     }
 
     private Author findOrCreateAuthor(String authorName) {
