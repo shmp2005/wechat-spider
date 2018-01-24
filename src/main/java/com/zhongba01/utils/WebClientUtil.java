@@ -30,7 +30,7 @@ public final class WebClientUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebClientUtil.class);
 
     public static Document getDocument(String url) throws VerifyCodeException {
-        int seconds = RandomUtils.nextInt(10, 20);
+        int seconds = RandomUtils.nextInt(40, 60);
         Document document = getDocument(url, seconds);
 
         if (null != document.selectFirst(".verifycode")) {
