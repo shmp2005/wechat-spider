@@ -20,6 +20,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 中巴价值投资研习社
@@ -55,8 +56,9 @@ public class UserServiceImpl implements UserService {
             return;
         }
 
-        Source source = sourceDao.findOne(user.getSourceId());
-        if (null == source || !source.isActive()) {
+//        Source source = sourceDao.findOne(user.getSourceId());
+        Optional<Source> source = sourceDao.findById(user.getSourceId());
+        if (!source.isPresent() || !source.get().isActive()) {
             LOGGER.warn("wechat user: " + user.getId() + " source disabled.");
             return;
         }

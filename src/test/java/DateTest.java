@@ -3,6 +3,7 @@ import com.zhongba01.utils.WebClientUtil;
 import org.junit.Test;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * 中巴价值投资研习社
@@ -24,5 +25,10 @@ public class DateTest {
         String text = "document.write(timeConvert('1514962942'))";
         Timestamp ts = DateUtil.parseTimestamp(text);
         System.out.println(ts);
+    }
+
+    @Test
+    public void testEncoding(){
+        System.out.println("汤建华" + LocalDateTime.now());
     }
 }

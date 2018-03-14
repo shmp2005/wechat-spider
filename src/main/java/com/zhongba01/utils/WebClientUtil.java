@@ -13,12 +13,10 @@ import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Arrays;
 
 /**
  * 中巴价值投资研习社
@@ -28,9 +26,17 @@ import java.util.Arrays;
  */
 public final class WebClientUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebClientUtil.class);
+    private static String DEFAULT_MIN_SECOND = "5";
+    private static String DEFAULT_MAX_SECOND = "10";
+    private static String PROP_MIN_SEC = "minSec";
+    private static String PROP_MAX_SEC = "maxSec";
 
     public static Document getDocument(String url) throws VerifyCodeException {
-        int seconds = RandomUtils.nextInt(40, 60);
+        int minSecond = Integer.valueOf(System.getProperty(PROP_MIN_SEC, DEFAULT_MIN_SECOND));
+        int maxSecond = Integer.valueOf(System.getProperty(PROP_MAX_SEC, DEFAULT_MAX_SECOND));
+        LOGGER.info("GetDocument: time interval: (" + minSecond + ", " + maxSecond + ") 秒/请求。");
+
+        int seconds = RandomUtils.nextInt(minSecond, maxSecond);
         Document document = getDocument(url, seconds);
 
         if (null != document.selectFirst(".verifycode")) {
@@ -75,11 +81,8 @@ public final class WebClientUtil {
     private static WebClient simpleWebClient() {
         WebClient webClient = new WebClient(randBrowserVersion());
         webClient.setCssErrorHandler(new SilentCssErrorHandler());
-        webClient.setIncorrectnessListener(new IncorrectnessListener() {
-            @Override
-            public void notify(String s, Object o) {
-                //do nothing
-            }
+        webClient.setIncorrectnessListener((s, o) -> {
+            //do nothing
         });
         webClient.setJavaScriptErrorListener(new DefaultJavaScriptErrorListener() {
             @Override
