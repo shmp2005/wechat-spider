@@ -1,8 +1,8 @@
 import com.zhongba01.utils.DateUtil;
-import com.zhongba01.utils.WebClientUtil;
 import org.junit.Test;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * 中巴价值投资研习社
@@ -27,9 +27,14 @@ public class DateTest {
     }
 
     @Test
-    public void testSplit(){
+    public void testSplit() {
         String url = "tlinfo:essay,essay_1234,sweb_url?inQuanApp=1";
         String[] array = url.split("[:,]");
         System.out.println(array);
+    }
+
+    @Test
+    public void testEncoding() {
+        System.out.println("汤建华" + LocalDateTime.now());
     }
 }

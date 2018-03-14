@@ -17,7 +17,7 @@ public class Article implements Serializable {
     private static final long serialVersionUID = 2L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "user_id")
     private Long userId;
