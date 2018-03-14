@@ -25,4 +25,11 @@ public class DateTest {
         Timestamp ts = DateUtil.parseTimestamp(text);
         System.out.println(ts);
     }
+
+    @Test
+    public void testSplit(){
+        String url = "tlinfo:essay,essay_1234,sweb_url?inQuanApp=1";
+        String[] array = url.split("[:,]");
+        System.out.println(array);
+    }
 }
