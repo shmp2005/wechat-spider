@@ -26,8 +26,8 @@ import java.net.URLEncoder;
  */
 public final class WebClientUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebClientUtil.class);
-    private static String DEFAULT_MIN_SECOND = "5";
-    private static String DEFAULT_MAX_SECOND = "10";
+    private static String DEFAULT_MIN_SECOND = "40";
+    private static String DEFAULT_MAX_SECOND = "50";
     private static String PROP_MIN_SEC = "minSec";
     private static String PROP_MAX_SEC = "maxSec";
 
