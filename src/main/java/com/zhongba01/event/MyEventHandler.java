@@ -38,12 +38,15 @@ public class MyEventHandler {
         for (User s : users) {
             try {
                 userService.dumpUser(s.getWeixin());
+
+                userService.saveCrawlAt(s.getWeixin());
             } catch (VerifyCodeException e) {
                 LOGGER.error(e.getLocalizedMessage());
                 e.printStackTrace();
                 break;
-            } finally {
-                userService.saveCrawlAt(s.getWeixin());
+            } catch (Exception ex) {
+                LOGGER.error("OTHER error. " + ex.getLocalizedMessage());
+                ex.printStackTrace();
             }
         }
         LOGGER.info("End craw Wechat。");
