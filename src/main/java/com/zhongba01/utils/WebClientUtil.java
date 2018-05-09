@@ -1,7 +1,6 @@
 package com.zhongba01.utils;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.IncorrectnessListener;
 import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -55,14 +54,8 @@ public final class WebClientUtil {
      * @return 文档对象模型
      */
     public static Document getDocument(String url, int seconds) {
-        final String sogou = "http://weixin.sogou.com";
-
         final HtmlPage htmlPage;
         try (WebClient webClient = simpleWebClient()) {
-            LOGGER.info("Fuck sogou：" + sogou);
-            webClient.getPage(sogou);
-            LOGGER.info("=========================================");
-            Thread.sleep(2000);
 
             LOGGER.info(webClient.getBrowserVersion().getNickname() + "; getDoc: " + url);
             LOGGER.info("Will sleep: " + seconds + " 秒。");
